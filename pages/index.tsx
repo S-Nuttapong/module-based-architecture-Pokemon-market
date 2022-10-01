@@ -17,7 +17,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { ChangeEvent, ChangeEventHandler, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   InputChangeHandler,
   IPokemonCard,
@@ -26,6 +26,7 @@ import {
 import { PokemonCard } from "../modules/PokemonCard";
 import { useDebounce } from "../hooks/useDebounce";
 import { useAsync } from "../hooks/useAsync";
+import merge from "lodash/merge";
 
 const pokemonService = {
   getAll: async (params?: PokemonQueryParameters) => {
@@ -42,15 +43,15 @@ const PokemonCart = () => {
   return <Button bg="bg.button">Cart</Button>;
 };
 
-type OnChangeSearch = (value: string) => void;
+type OnNameSearch = (value: string) => void;
 interface IPokemonSearch extends Omit<InputProps, "onChange" | "value"> {
-  onSearch?: OnChangeSearch;
+  onSearch?: OnNameSearch;
   searchDelay?: number;
 }
 
 const noop = <T extends any>(_: T) => {};
 
-const PokemonSearch = (props: IPokemonSearch) => {
+const PokemonNameSearch = (props: IPokemonSearch) => {
   const { onSearch = noop, searchDelay, ...rest } = props;
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, searchDelay);
@@ -97,22 +98,42 @@ function OptionSelect<T extends OptionValue>(props: IOptionSelect<T>) {
 }
 
 const TypeOptions = Object.entries(PokemonTCG.Type).map(([_, typeValue]) => ({
-  value: typeValue.toLowerCase(),
+  value: typeValue,
   label: typeValue,
 }));
 
-const PokemonFilter = () => (
+const RarityOptions = Object.entries(PokemonTCG.Rarity).map(
+  ([_, rarityValue]) => ({
+    value: rarityValue,
+    label: rarityValue,
+  })
+);
+
+type FilterLabels = "Rarity" | "Type" | "Set";
+
+type FilterTypes = Lowercase<FilterLabels>;
+
+type FilterEventInput = Partial<Record<FilterTypes, string>>;
+interface IPokemonFilter {
+  onFilter: (input: FilterEventInput) => void;
+}
+
+const PokemonFilter = ({ onFilter }: IPokemonFilter) => (
   <HStack spacing="16px">
     <Select minW="max-content" color="content.primary" placeholder="Set" />
-    <Select minW="max-content" color="content.primary" placeholder="Rarity" />
+    <OptionSelect
+      minW="max-content"
+      color="content.primary"
+      placeholder="Rarity"
+      options={RarityOptions}
+      onChange={(e) => onFilter({ rarity: e.target.value })}
+    />
     <OptionSelect
       minW="max-content"
       color="content.primary"
       placeholder="Type"
       options={TypeOptions}
-      onChange={(e) => {
-        console.debug(e.target.value);
-      }}
+      onChange={(e) => onFilter({ type: e.target.value })}
     />
   </HStack>
 );
@@ -135,18 +156,14 @@ const PokemonCardsList = ({ pokemonList = [] }: IPokemonCardList) => (
   </Grid>
 );
 
-const useSearchByName = () => {
-  const wildCardSearchService = async (value: string) => {
-    if (!value) return [];
-    return await PokemonTCG.findCardsByQueries({
-      pageSize: 20,
-      q: `name:${value}* types:water`,
-    });
-  };
-  return useAsync(wildCardSearchService);
-};
+const isTruthy = (value: any) => !!value;
 
-const useSearchByFilter = () => {
+const isFalsy = (value: any) => !value;
+
+//name search do wild card
+//types search do nothing
+//rarity do exact match
+const useSearchFilter = () => {
   const [searchTerms, setSearchTerm] = useState({
     set: "",
     rarity: "",
@@ -154,23 +171,28 @@ const useSearchByFilter = () => {
     name: "",
   });
 
-  const search = () => {};
+  const searchFilterHandler = async (terms: Partial<typeof searchTerms>) => {
+    const newTerms = merge({}, searchTerms, terms);
+    const { name, set, rarity, type } = newTerms;
+    const areAllSearchTermsCleared = [name, set, rarity, type].every(isFalsy);
+    const rarityParam = rarity ? ` !rarity:"${rarity}"` : "";
+    const typesParam = type ? ` types:${type}` : "";
+    const query = `name:${name}*${typesParam}${rarityParam}`;
 
-  const filter = () => {};
+    setSearchTerm(newTerms);
 
-  return;
+    console.debug({ query, areAllSearchTermsCleared, newTerms });
+
+    if (areAllSearchTermsCleared) return [];
+
+    return await PokemonTCG.findCardsByQueries({ pageSize: 20, q: query });
+  };
+
+  return useAsync(searchFilterHandler);
 };
-
-const useSearchFilter = () => {};
 
 const Home = () => {
   const [pokemonList, setPokemon] = useState([] as IPokemonCard[]);
-
-  const [filterTerms, setFilterTerms] = useState({
-    set: "",
-    rarity: "",
-    type: "",
-  });
 
   useEffect(() => {
     (async () => {
@@ -184,7 +206,7 @@ const Home = () => {
     })();
   }, []);
 
-  const [data, search] = useSearchByName();
+  const [data, searchFilter] = useSearchFilter();
 
   return (
     <Flex
@@ -199,7 +221,7 @@ const Home = () => {
         <Flex w="100%" justifyContent="space-between">
           <Heading color="content.primary">Pokemon market</Heading>
           <HStack>
-            <PokemonSearch onSearch={search} />
+            <PokemonNameSearch onSearch={(name) => searchFilter({ name })} />
             <Button bg="bg.button">Cart</Button>;
           </HStack>
         </Flex>
@@ -209,7 +231,7 @@ const Home = () => {
         {/* filter */}
         <Flex w="100%" justifyContent="space-between" alignItems="center">
           <Text color="content.primary">Choose Card</Text>
-          <PokemonFilter />
+          <PokemonFilter onFilter={(value) => searchFilter(value)} />
         </Flex>
 
         {/* Product card list */}
@@ -222,6 +244,8 @@ const Home = () => {
             }
           />
         )}
+
+        {}
       </Stack>
     </Flex>
   );
