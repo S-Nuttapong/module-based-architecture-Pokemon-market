@@ -13,6 +13,8 @@ export const PokemonCard = (props: IPokemonCard) => {
             height="142px"
             objectFit="contain"
             alt={props.name}
+            blurDataURL={props.images.small}
+            placeholder="blur"
           />
         </Box>
         <Box
