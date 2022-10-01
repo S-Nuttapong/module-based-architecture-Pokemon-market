@@ -13,7 +13,7 @@ export const useAsync = <TAction extends AsyncAction, TError = Error>(action: TA
     const actionWithRemoteState = async (...args: Parameters<TAction>) => {
         setIsLoading(true)
         try {
-            const results = await action(args)
+            const results = await action(...args)
             setResults(results)
         }
         catch (e) {

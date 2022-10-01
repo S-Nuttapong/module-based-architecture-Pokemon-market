@@ -11,6 +11,7 @@ import {
   Input,
   InputProps,
   Select,
+  SelectProps,
   Spinner,
   Stack,
   Text,
@@ -65,6 +66,7 @@ const PokemonSearch = (props: IPokemonSearch) => {
   return (
     <Input
       w="173px"
+      color="content.primary"
       placeholder="Search by name"
       value={searchTerm}
       onChange={handleChange}
@@ -73,11 +75,45 @@ const PokemonSearch = (props: IPokemonSearch) => {
   );
 };
 
+type OptionValue = string | ReadonlyArray<string> | number | undefined;
+
+type Option<T extends OptionValue> = { value: T; label: string; id?: string };
+interface IOptionSelect<T extends OptionValue> extends SelectProps {
+  options: Option<T>[];
+}
+
+function OptionSelect<T extends OptionValue>(props: IOptionSelect<T>) {
+  const { options, ...selectProps } = props;
+  return (
+    <Select {...selectProps}>
+      {options.map(({ label, value, id }, index) => (
+        //note: should be save to use index here, as we render static options list
+        <option key={id || index} value={value}>
+          {label}
+        </option>
+      ))}
+    </Select>
+  );
+}
+
+const TypeOptions = Object.entries(PokemonTCG.Type).map(([_, typeValue]) => ({
+  value: typeValue.toLowerCase(),
+  label: typeValue,
+}));
+
 const PokemonFilter = () => (
   <HStack spacing="16px">
     <Select minW="max-content" color="content.primary" placeholder="Set" />
     <Select minW="max-content" color="content.primary" placeholder="Rarity" />
-    <Select minW="max-content" color="content.primary" placeholder="Type" />
+    <OptionSelect
+      minW="max-content"
+      color="content.primary"
+      placeholder="Type"
+      options={TypeOptions}
+      onChange={(e) => {
+        console.debug(e.target.value);
+      }}
+    />
   </HStack>
 );
 
@@ -99,19 +135,38 @@ const PokemonCardsList = ({ pokemonList = [] }: IPokemonCardList) => (
   </Grid>
 );
 
-const useWildCardSearch = () => {
-  const wildCardSearchService = async (value: string) =>
-    await PokemonTCG.findCardsByQueries({
+const useSearchByName = () => {
+  const wildCardSearchService = async (value: string) => {
+    if (!value) return [];
+    return await PokemonTCG.findCardsByQueries({
       pageSize: 20,
-      q: `name:${value}*`,
+      q: `name:${value}* types:water`,
     });
+  };
   return useAsync(wildCardSearchService);
 };
+
+const useSearchByFilter = () => {
+  const [searchTerms, setSearchTerm] = useState({
+    set: "",
+    rarity: "",
+    type: "",
+    name: "",
+  });
+
+  const search = () => {};
+
+  const filter = () => {};
+
+  return;
+};
+
+const useSearchFilter = () => {};
 
 const Home = () => {
   const [pokemonList, setPokemon] = useState([] as IPokemonCard[]);
 
-  const [filterTerm, setFilterTerm] = useState({
+  const [filterTerms, setFilterTerms] = useState({
     set: "",
     rarity: "",
     type: "",
@@ -129,7 +184,7 @@ const Home = () => {
     })();
   }, []);
 
-  const [data, search] = useWildCardSearch();
+  const [data, search] = useSearchByName();
 
   return (
     <Flex
@@ -163,7 +218,7 @@ const Home = () => {
         ) : (
           <PokemonCardsList
             pokemonList={
-              Array.isArray(data.results) ? data.results : pokemonList
+              isNonEmptyArray(data.results) ? data.results : pokemonList
             }
           />
         )}
@@ -171,5 +226,9 @@ const Home = () => {
     </Flex>
   );
 };
+
+function isNonEmptyArray<T>(array?: T[] | T): array is T[] {
+  return Array.isArray(array) && !!array.length;
+}
 
 export default Home;
