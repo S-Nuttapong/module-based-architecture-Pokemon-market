@@ -20,6 +20,7 @@ import {
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { NamedAPIResource, PokemonClient } from "pokenode-ts"; // import the PokemonClient (EggGroups enum is fully optional)
+import { PokemonCard } from "../types";
 
 //search: GET https://api.pokemontcg.io/v2/cards
 
@@ -32,20 +33,45 @@ const pokemonService = {
       method: "get",
       params,
     });
-    return results.data as PokemonTCG.Card[];
+    return results.data as PokemonCard[];
   },
 };
 
+const PokemonSearch = () => (
+  <HStack>
+    <Input w="173px" placeholder="Search by name" />
+    <Button bg="bg.button">Cart</Button>
+  </HStack>
+);
+
+const PokemonFilter = () => (
+  <HStack spacing="16px">
+    <Select minW="max-content" color="content.primary" placeholder="Set" />
+    <Select minW="max-content" color="content.primary" placeholder="Rarity" />
+    <Select minW="max-content" color="content.primary" placeholder="Type" />
+  </HStack>
+);
+
+interface IPokemonCardList {
+  pokemonList: PokemonCard[];
+}
+
+const PokemonCardsList = ({ pokemonList }: IPokemonCardList) => (
+  <Grid
+    gridTemplateColumns="repeat(auto-fill, minmax(150px,1fr) )"
+    columnGap="16px"
+    rowGap="26px"
+  >
+    {pokemonList.map((pokemon) => (
+      <GridItem key={pokemon.name} color="content.primary">
+        <PokemonCard {...pokemon} />
+      </GridItem>
+    ))}
+  </Grid>
+);
+
 const Home = () => {
-  // const pokemon = await axios.get(
-  //   `https://api.hubapi.com/crm/v3/objects/tickets/${ticketId}`,
-  //   {
-  //     params: {
-  //       hapikey: process.env.HUBSPOT_API_KEY,
-  //     },
-  //   }
-  // );
-  const [pokemonList, setPokemon] = useState([] as PokemonTCG.Card[]);
+  const [pokemonList, setPokemon] = useState([] as PokemonCard[]);
 
   useEffect(() => {
     (async () => {
@@ -59,8 +85,6 @@ const Home = () => {
     })();
   }, []);
 
-  //console.debug({ pokemonList });
-
   return (
     <Flex
       bg="bg.primary"
@@ -73,10 +97,7 @@ const Home = () => {
         {/* Main */}
         <Flex w="100%" justifyContent="space-between">
           <Heading color="content.primary">Pokemon market</Heading>
-          <HStack>
-            <Input w="" placeholder="Search by name" />
-            <Button bg="bg.button">Cart</Button>
-          </HStack>
+          <PokemonSearch />
         </Flex>
 
         <Divider color="border.divider" />
@@ -84,81 +105,11 @@ const Home = () => {
         {/* filter */}
         <Flex w="100%" justifyContent="space-between" alignItems="center">
           <Text color="content.primary">Choose Card</Text>
-          <HStack spacing="16px">
-            <Select
-              minW="max-content"
-              color="content.primary"
-              placeholder="Set"
-            />
-            <Select
-              minW="max-content"
-              color="content.primary"
-              placeholder="Rarity"
-            />
-            <Select
-              minW="max-content"
-              color="content.primary"
-              placeholder="Type"
-            />
-          </HStack>
+          <PokemonFilter />
         </Flex>
 
         {/* Product card list */}
-        <Grid
-          gridTemplateColumns="repeat(auto-fill, minmax(150px,1fr) )"
-          columnGap="16px"
-          rowGap="26px"
-        >
-          {pokemonList.map((pokemon) => (
-            <GridItem key={pokemon.name} color="content.primary">
-              <Box h="300px">
-                <Flex h="50%" position="relative" justifyContent="center">
-                  <Box position="absolute" zIndex={1}>
-                    <Image
-                      src={pokemon.images.small}
-                      width="102px"
-                      height="142px"
-                      objectFit="contain"
-                      alt={pokemon.name}
-                    />
-                  </Box>
-                  <Box
-                    h="40px"
-                    w="100%"
-                    bg="bg.secondary"
-                    position="absolute"
-                    borderTopLeftRadius="16px"
-                    borderTopRightRadius="16px"
-                    bottom={0}
-                  />
-                </Flex>
-                <Flex
-                  h="50%"
-                  bg="bg.secondary"
-                  padding="16px"
-                  flexDir="column"
-                  justifyContent="space-between"
-                  borderBottomLeftRadius="16px"
-                  borderBottomRightRadius="16px"
-                >
-                  <Text textAlign="center">{pokemon.name}</Text>
-                  <Stack spacing="8px" alignItems="center">
-                    <HStack
-                      divider={
-                        <Box w="4px" h="4px" bg="white" borderRadius="4px" />
-                      }
-                    >
-                      <Text fontSize="12px">$2.29</Text>
-                      <Text fontSize="12px">Out of stock</Text>
-                    </HStack>
-                    <Button bg="bg.overlay">Add to cart</Button>
-                  </Stack>
-                </Flex>
-              </Box>
-              {/* <Link href={pokemon.url}>{pokemon.url}</Link> */}
-            </GridItem>
-          ))}
-        </Grid>
+        <PokemonCardsList pokemonList={pokemonList} />
       </Stack>
     </Flex>
   );
