@@ -2,9 +2,7 @@ import type { NextPage, GetServerSideProps } from "next";
 import { PokemonTCG } from "pokemon-tcg-sdk-typescript";
 import Image from "next/image";
 import {
-  Box,
   Button,
-  color,
   Divider,
   Flex,
   Grid,
@@ -12,19 +10,14 @@ import {
   Heading,
   HStack,
   Input,
-  Link,
   Select,
   Stack,
   Text,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { NamedAPIResource, PokemonClient } from "pokenode-ts"; // import the PokemonClient (EggGroups enum is fully optional)
-import { PokemonCard } from "../types";
-
-//search: GET https://api.pokemontcg.io/v2/cards
-
-//rarity: getGrowthRateByName
+import { IPokemonCard } from "../types";
+import { PokemonCard } from "../modules/PokemonCard";
 
 const pokemonService = {
   getAll: async (params?: PokemonTCG.Parameter) => {
@@ -33,7 +26,7 @@ const pokemonService = {
       method: "get",
       params,
     });
-    return results.data as PokemonCard[];
+    return results.data as IPokemonCard[];
   },
 };
 
@@ -53,10 +46,10 @@ const PokemonFilter = () => (
 );
 
 interface IPokemonCardList {
-  pokemonList: PokemonCard[];
+  pokemonList: IPokemonCard[];
 }
 
-const PokemonCardsList = ({ pokemonList }: IPokemonCardList) => (
+const PokemonCardsList = ({ pokemonList = [] }: IPokemonCardList) => (
   <Grid
     gridTemplateColumns="repeat(auto-fill, minmax(150px,1fr) )"
     columnGap="16px"
@@ -71,7 +64,7 @@ const PokemonCardsList = ({ pokemonList }: IPokemonCardList) => (
 );
 
 const Home = () => {
-  const [pokemonList, setPokemon] = useState([] as PokemonCard[]);
+  const [pokemonList, setPokemon] = useState([] as IPokemonCard[]);
 
   useEffect(() => {
     (async () => {
