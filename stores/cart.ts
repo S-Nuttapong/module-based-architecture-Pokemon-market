@@ -48,4 +48,5 @@ export const pokemonCartStoreFactory = (apis: ICartServices) => create<CartState
     }
 }))
 
+//TODO: port the real BE services once ready
 export const usePokemonCartStore = pokemonCartStoreFactory(ClientCartServices())
