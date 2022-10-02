@@ -20,6 +20,7 @@ import { PokemonCard } from "../modules/PokemonCard";
 import { useSearchFilter } from "../hooks/useSearchFilter";
 import { OptionSelect } from "../components/OptionSelect";
 import { PokemonNameSearch } from "../modules/PokemonNameSearch";
+import { isNonEmptyArray } from "../utils/common";
 
 const pokemonService = {
   getAll: async (params?: PokemonQueryParameters) => {
@@ -154,9 +155,5 @@ const Home = () => {
     </Flex>
   );
 };
-
-function isNonEmptyArray<T>(array?: T[] | T): array is T[] {
-  return Array.isArray(array) && !!array.length;
-}
 
 export default Home;
