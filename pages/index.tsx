@@ -17,11 +17,14 @@ import {
   Select,
   Spinner,
   Stack,
+  TableCellProps,
+  TableHeadProps,
+  TableHeadProps,
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { IPokemonCard, PokemonQueryParameters } from "../@types/pokemonAPIs";
 import { PokemonCard } from "../modules/PokemonCard";
 import { useSearchFilter } from "../hooks/useSearchFilter";
@@ -32,6 +35,8 @@ import React from "react";
 import { DataTable } from "../components/DataTable";
 import { createColumnHelper } from "@tanstack/react-table";
 import { usePokemonCartStore } from "../stores/cart";
+import Image from "next/image";
+import isEmpty from "lodash/isEmpty";
 
 const pokemonService = {
   getAll: async (params?: PokemonQueryParameters) => {
@@ -46,57 +51,176 @@ const pokemonService = {
 
 type ChakraButtonRef = React.MutableRefObject<HTMLButtonElement | null>;
 
-type UnitConversion = {
-  fromUnit: string;
-  toUnit: string;
-  factor: number;
-};
+const currencyAdder = (currency: string) => (price?: number | string) =>
+  price ? `${currency} ${price}` : `Free`;
+
+type ColumnComponent = (props: { id: string }) => JSX.Element;
+
+const columnComponentFactory = (fnComponent: ColumnComponent) => fnComponent;
+
+const DecreaseQuantityButton = columnComponentFactory(({ id }) => {
+  const updateItemQuantity = usePokemonCartStore(
+    (state) => state.updateItemQuantity
+  );
+  return (
+    <Button
+      bg="button.primary"
+      w="54px"
+      h="54px"
+      borderRadius="8px"
+      onClick={() => {
+        console.debug({ id });
+      }}
+    >
+      -
+    </Button>
+  );
+});
+
+const CartItemImage = columnComponentFactory(({ id }) => {
+  const imgSrc = usePokemonCartStore(
+    (state) => state.cartItemById[id].item.images.small
+  );
+  const name = usePokemonCartStore((state) => state.cartItemById[id].item.name);
+  return (
+    <Flex alignItems="flex-start">
+      <Image
+        src={imgSrc}
+        width="44px"
+        height="60px"
+        objectFit="contain"
+        alt={name}
+        blurDataURL={imgSrc}
+        placeholder="blur"
+      />
+    </Flex>
+  );
+});
+
+const ItemColumn = columnComponentFactory(({ id }) => {
+  return (
+    <Stack flexDir="column" alignContent="flex-start">
+      <CartItemImage id={id} />
+      <DecreaseQuantityButton id={id} />
+    </Stack>
+  );
+});
+
+const QuantityDisplay = columnComponentFactory(({ id }) => {
+  const quantity = usePokemonCartStore(
+    (state) => state.cartItemById[id].quantity
+  );
+  return (
+    <Box
+      textAlign="center"
+      bg="button.primary"
+      h="54px"
+      minW="200px"
+      borderRadius="8px"
+    >
+      <Text color="content.primary">{quantity}</Text>
+    </Box>
+  );
+});
+
+const ItemDetail = columnComponentFactory(({ id }) => {
+  const currency = usePokemonCartStore((state) => state.currency);
+  const price = usePokemonCartStore(
+    (state) => state.cartItemById[id].item.price
+  );
+  const name = usePokemonCartStore((state) => state.cartItemById[id].item.name);
+  const addCurrency = currencyAdder(currency);
+  return (
+    <Box>
+      <Text color="content.primary" minWidth="ma">
+        {name}
+      </Text>
+      <Text color="content.secondary">{addCurrency(price)}</Text>
+    </Box>
+  );
+});
+
+const QuantityColumn = columnComponentFactory(({ id }) => (
+  <Stack>
+    <ItemDetail id={id} />
+    <QuantityDisplay id={id} />
+  </Stack>
+));
+
+const IncreaseQuantityButton = columnComponentFactory(({ id }) => {
+  const updateItemQuantity = usePokemonCartStore(
+    (state) => state.updateItemQuantity
+  );
+  return (
+    <Button
+      bg="button.primary"
+      w="54px"
+      h="54px"
+      borderRadius="8px"
+      onClick={() => {
+        console.debug({ id });
+      }}
+    >
+      +
+    </Button>
+  );
+});
+
+const TotalItemPrice = columnComponentFactory(({ id }) => {
+  const currency = usePokemonCartStore((state) => state.currency);
+  const itemTotal = usePokemonCartStore(
+    (state) => state.cartItemById[id].itemTotal
+  );
+  const addCurrency = currencyAdder(currency);
+
+  return <Text color="content.primary">{addCurrency(itemTotal)}</Text>;
+});
+
+const PriceColumn = columnComponentFactory(({ id }) => (
+  <Flex flexDir="column" justifyContent="space-between">
+    <TotalItemPrice id={id} />
+    <IncreaseQuantityButton id={id} />
+  </Flex>
+));
 
 const MiniCartLineItems = () => {
-  const cartItemById = usePokemonCartStore((state) => state.cartItemById);
   const cartIds = usePokemonCartStore((state) => state.cartItemIds);
+  const cartItemIds = cartIds.map((id) => ({ id }));
+  const columnHelper = createColumnHelper<typeof cartItemIds[number]>();
 
-  const columnHelper = createColumnHelper<UnitConversion>();
+  const columns = useMemo(
+    () => [
+      columnHelper.accessor("id", {
+        header: "Item",
+        cell: (id) => <ItemColumn id={id.getValue()} />,
+      }),
+      columnHelper.accessor("id", {
+        header: "Oty",
+        cell: (id) => <QuantityColumn id={id.getValue()} />,
+      }),
+      columnHelper.accessor("id", {
+        header: "Price",
+        cell: (id) => <PriceColumn id={id.getValue()} />,
+        meta: {
+          cell: {
+            p: "0px",
+            display: "flex",
+            alignItems: "",
+          } as TableCellProps,
+          header: {
+            p: "0px",
+            textAlign: "end",
+          } as TableHeadProps,
+        },
+      }),
+    ],
+    [cartIds]
+  );
 
-  const data: UnitConversion[] = [
-    {
-      fromUnit: "inches",
-      toUnit: "millimetres (mm)",
-      factor: 25.4,
-    },
-    {
-      fromUnit: "feet",
-      toUnit: "centimetres (cm)",
-      factor: 30.48,
-    },
-    {
-      fromUnit: "yards",
-      toUnit: "metres (m)",
-      factor: 0.91444,
-    },
-  ];
+  if (isEmpty(cartIds))
+    return <Text color="content.primary">Your Cart is Empty</Text>;
 
-  const columns = [
-    columnHelper.accessor("fromUnit", {
-      cell: (info) => info.getValue(),
-      header: "To convert",
-    }),
-    columnHelper.accessor("toUnit", {
-      cell: (info) => info.getValue(),
-      header: "Into",
-    }),
-    columnHelper.accessor("factor", {
-      cell: (info) => <Box>{info.getValue()}</Box>,
-      header: "Multiply by",
-      meta: {
-        isNumeric: true,
-      },
-    }),
-  ];
-
-  console.debug({ cartIds, cartItemById });
-
-  return <DataTable columns={columns} data={data} />;
+  return <DataTable columns={columns} data={cartItemIds} />;
 };
 
 function PokemonCart() {
@@ -105,7 +229,12 @@ function PokemonCart() {
 
   return (
     <>
-      <Button bg="bg.button" ref={btnRef} colorScheme="teal" onClick={onOpen}>
+      <Button
+        bg="button.secondary"
+        ref={btnRef}
+        colorScheme="teal"
+        onClick={onOpen}
+      >
         Cart
       </Button>
       <Drawer
@@ -137,13 +266,13 @@ function PokemonCart() {
                 </Text>
               </Box>
               {/* TODO: replace with close icon instead */}
-              <Button onClick={onClose} bg="bg.button">
+              <Button onClick={onClose} bg="button.secondary">
                 Close
               </Button>
             </Flex>
           </DrawerHeader>
 
-          <DrawerBody p="0px">
+          <DrawerBody>
             <MiniCartLineItems />
           </DrawerBody>
         </DrawerContent>

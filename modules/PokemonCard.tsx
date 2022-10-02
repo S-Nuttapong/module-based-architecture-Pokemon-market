@@ -46,7 +46,7 @@ export const PokemonCard = (props: IPokemonCard) => {
             <Text fontSize="12px">$2.29</Text>
             <Text fontSize="12px">Out of stock</Text>
           </HStack>
-          <Button bg="bg.overlay" onClick={() => addToCart(props)}>
+          <Button bg="button.primary" onClick={() => addToCart(props)}>
             Add to cart
           </Button>
         </Stack>

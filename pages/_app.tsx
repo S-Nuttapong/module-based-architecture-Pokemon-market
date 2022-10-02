@@ -15,13 +15,17 @@ const colors = {
     primary: "#252836",
     secondary: "#1F1D2B",
     overlay: "#000000B2",
-    //disabled: "",
+  },
+  button: {
+    primary: "#363946",
+    secondary: "#EA7C69",
+    disabled: "#2e303e",
+    focus: "#4d4f5a",
   },
   bg: {
     primary: "#252836",
     secondary: "#1F1D2B",
     overlay: "#000000B2",
-    button: "#EA7C69",
   },
   border: {
     divider: "#FFFFFF14",

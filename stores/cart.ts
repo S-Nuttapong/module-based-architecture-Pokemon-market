@@ -30,11 +30,11 @@ export const pokemonCartStoreFactory = (apis: ICartServices) => create<CartState
             state.isLoading = false
         })
     },
-    addToCart: async (item) => {
+    addToCart: async (payload) => {
         set({ isLoading: true })
-        const { total } = await apis.addToCart(item)
+        const { total, item } = await apis.addToCart(payload)
         set((state) => {
-            state.cartItemById[item.id] = { ...item, quantity: 1 }
+            state.cartItemById[item.id] = item
             state.cartItemIds.push(item.id)
             state.total = total
             state.isLoading = false
@@ -42,9 +42,9 @@ export const pokemonCartStoreFactory = (apis: ICartServices) => create<CartState
     },
     updateItemQuantity: async ({ id, quantity }) => {
         set({ isLoading: true })
-        const { total } = await apis.updateItemQuantity({ id, quantity })
+        const { total, item } = await apis.updateItemQuantity({ id, quantity })
         set((state) => {
-            state.cartItemById[id].quantity = quantity
+            state.cartItemById[item.id] = item
             state.total = total
             state.isLoading = false
         })

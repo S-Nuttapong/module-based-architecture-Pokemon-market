@@ -7,6 +7,7 @@ import {
   ColumnDef,
   getSortedRowModel,
 } from "@tanstack/react-table";
+import get from "lodash/get";
 
 export type DataTableProps<Data extends object> = {
   data: Data[];
@@ -35,13 +36,15 @@ export function DataTable<Data extends object>({
           <Tr key={headerGroup.id}>
             {headerGroup.headers.map((header) => {
               // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
-              const meta: any = header.column.columnDef.meta;
+              const headerStyles =
+                get(header.column.columnDef.meta, "header") ?? {};
               return (
                 <Th
                   key={header.id}
                   onClick={header.column.getToggleSortingHandler()}
-                  isNumeric={meta?.isNumeric}
                   textTransform="inherit"
+                  {...headerStyles}
+                  p="0"
                 >
                   {flexRender(
                     header.column.columnDef.header,
@@ -58,9 +61,9 @@ export function DataTable<Data extends object>({
           <Tr key={row.id}>
             {row.getVisibleCells().map((cell) => {
               // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
-              const meta: any = cell.column.columnDef.meta;
+              const cellStyles = get(cell.column.columnDef.meta, "cell") ?? {};
               return (
-                <Td key={cell.id} isNumeric={meta?.isNumeric}>
+                <Td key={cell.id} p="0" {...cellStyles}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </Td>
               );

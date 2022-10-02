@@ -1,6 +1,6 @@
 import { safeParseJSON } from "../../utils/safeParseJSON"
 import { cartServicesFactory, IPokemonCart } from "./cartServicesFactory"
-
+import { nanoid } from 'nanoid'
 
 type CartFields = keyof IPokemonCart
 
@@ -15,19 +15,22 @@ export const ClientCartServices = (storage: Storage) => {
     const setItem = <TField extends CartFields>(key: TField, value: IPokemonCart[TField]) => storage.setItem(key, JSON.stringify(value))
     return cartServicesFactory({
         addToCart: async (item) => {
+            const id = nanoid()
             const cartItemById = getItem('cartItemById', {})
             const cartItemIds = getItem('cartItemIds', [])
             const total = getItem('total', 0)
 
-            const newTotal = total + (item?.price ?? 0)
-            const newCartItemById = { ...cartItemById, [item.id]: { ...item, quantity: 1 } }
-            const newCartItemIds = [...cartItemIds, item.id]
+            const itemPrice = item.price ?? 0
+            const newCartItem = { id, item, quantity: 1, itemTotal: itemPrice }
+            const newTotal = total + itemPrice
+            const newCartItemById = { ...cartItemById, [id]: newCartItem }
+            const newCartItemIds = [...cartItemIds, id]
 
             setItem('cartItemById', newCartItemById)
             setItem('cartItemIds', newCartItemIds)
             setItem('total', newTotal)
 
-            return { total: newTotal }
+            return { total: newTotal, item: newCartItem }
         },
         updateItemQuantity: async ({ id, quantity }) => {
             const cartItemById = getItem('cartItemById')
@@ -35,18 +38,19 @@ export const ClientCartServices = (storage: Storage) => {
 
             const cartItem = cartItemById[id]
             const quantityChange = quantity - cartItem.quantity
-            const itemPrice = cartItemById[id]?.price ?? 0
-            const newTotal = (itemPrice * quantityChange) + total
+            const itemPrice = cartItem?.item?.price ?? 0
+            const newItemTotal = itemPrice * quantityChange
+            const newItemTotalChange = newItemTotal - cartItem.itemTotal
+            const newTotal = total + newItemTotalChange
+            const updatedCartItem = { ...cartItem, quantity, itemTotal: newItemTotal }
 
-            setItem('cartItemById', { ...cartItemById, [id]: { ...cartItem, quantity } })
+            setItem('cartItemById', { ...cartItemById, [id]: updatedCartItem })
             setItem('total', newTotal)
 
-            return { total: newTotal }
+            return { total: newTotal, item: updatedCartItem }
         },
         clearAllItems: async () => {
-            setItem('cartItemById', {})
-            setItem('cartItemIds', [])
-            setItem('total', 0)
+            storage.clear()
             return { status: 'Success' }
         },
         fetch: async () => {
