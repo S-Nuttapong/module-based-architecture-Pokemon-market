@@ -84,7 +84,7 @@ interface IPokemonCardList {
 
 const PokemonCardsList = ({ pokemonList = [] }: IPokemonCardList) => (
   <Grid
-    gridTemplateColumns="repeat(auto-fill, minmax(10px,1fr) )"
+    gridTemplateColumns="repeat(auto-fill, minmax(150px,1fr) )"
     columnGap="16px"
     rowGap="26px"
   >
