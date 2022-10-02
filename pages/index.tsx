@@ -56,6 +56,8 @@ type UnitConversion = {
   factor: number;
 };
 
+const useMiniCartLinItems = () => {};
+
 const MiniCartLineItems = () => {
   const columnHelper = createColumnHelper<UnitConversion>();
 
@@ -87,7 +89,7 @@ const MiniCartLineItems = () => {
       header: "Into",
     }),
     columnHelper.accessor("factor", {
-      cell: (info) => info.getValue(),
+      cell: (info) => <Box>{info.getValue()}</Box>,
       header: "Multiply by",
       meta: {
         isNumeric: true,

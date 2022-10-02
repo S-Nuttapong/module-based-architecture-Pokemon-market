@@ -29,8 +29,8 @@ export function DataTable<Data extends object>({
   });
 
   return (
-    <Table>
-      <Thead>
+    <Table color="content.primary" variant="unstyled">
+      <Thead textTransform="capitalize">
         {table.getHeaderGroups().map((headerGroup) => (
           <Tr key={headerGroup.id}>
             {headerGroup.headers.map((header) => {
@@ -41,6 +41,7 @@ export function DataTable<Data extends object>({
                   key={header.id}
                   onClick={header.column.getToggleSortingHandler()}
                   isNumeric={meta?.isNumeric}
+                  textTransform="inherit"
                 >
                   {flexRender(
                     header.column.columnDef.header,
