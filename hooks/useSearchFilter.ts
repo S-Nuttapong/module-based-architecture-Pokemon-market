@@ -1,6 +1,6 @@
 import { PokemonTCG } from "pokemon-tcg-sdk-typescript";
 import { useState } from "react";
-import { useAsync } from "./useAsync";
+import { useAsync } from "./useApi";
 import merge from "lodash/merge";
 import { isFalsy } from "../utils/common";
 

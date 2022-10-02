@@ -1,17 +1,17 @@
 import create from 'zustand'
 
 import { IPokemonCard } from '../@types/pokemonAPIs'
-import { QuantityChangePayload, PokemonCartStoreAPIs, IPokemonCart } from '../@types/pokemonCartAPIs'
+import { ICartServices, IPokemonCart, QuantityChangePayload } from '../services/cart-services/cartServicesFactory'
+import { ClientCartServices } from '../services/cart-services/ClientCartServices'
 
-interface CartState extends IPokemonCart {
+export interface CartState extends IPokemonCart {
     initializeCart: () => Promise<void>
     addToCart: (item: IPokemonCard) => Promise<void>,
     clearAllItems: () => Promise<void>
-    increaseQuantity: (payload: QuantityChangePayload) => Promise<void>
-    decreaseQuantity: (payload: QuantityChangePayload) => Promise<void>
+    updateItemQuantity: (payload: QuantityChangePayload) => Promise<void>
 }
 
-export const pokemonCartStoreFactory = (apis: PokemonCartStoreAPIs) => create<CartState>()((set) => ({
+export const pokemonCartStoreFactory = (apis: ICartServices) => create<CartState>()((set) => ({
     total: 0,
     currency: 'USD',
     cartItemIds: [],
@@ -29,18 +29,10 @@ export const pokemonCartStoreFactory = (apis: PokemonCartStoreAPIs) => create<Ca
             return state
         })
     },
-    increaseQuantity: async ({ id, quantity }) => {
-        const { total } = await apis.increaseQuantity({ id, quantity })
+    updateItemQuantity: async ({ id, quantity }) => {
+        const { total } = await apis.updateItemQuantity({ id, quantity })
         set((state) => {
-            state.cartItemById[id].quantity += quantity
-            state.total = total
-            return state
-        })
-    },
-    decreaseQuantity: async ({ id, quantity }) => {
-        const { total } = await apis.decreaseQuantity({ id, quantity })
-        set((state) => {
-            state.cartItemById[id].quantity -= quantity
+            state.cartItemById[id].quantity = quantity
             state.total = total
             return state
         })
@@ -56,4 +48,4 @@ export const pokemonCartStoreFactory = (apis: PokemonCartStoreAPIs) => create<Ca
     }
 }))
 
-export const usePokemonCartStore = pokemonCartStoreFactory()
+export const usePokemonCartStore = pokemonCartStoreFactory(ClientCartServices())

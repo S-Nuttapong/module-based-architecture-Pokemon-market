@@ -1,0 +1,1 @@
+export type GenericApi = (...args: any[]) => Promise<any>

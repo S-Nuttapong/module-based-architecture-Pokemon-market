@@ -1,11 +1,10 @@
 import { useState } from "react"
-
-type AsyncAction = (...args: any[]) => Promise<any>
+import { GenericApi } from "../@types/type-utils/asyncFunction"
 
 /**
  * @todo: replace this with React query, should API support
  */
-export const useAsync = <TAction extends AsyncAction, TError = Error>(action: TAction) => {
+export const useAsync = <TAction extends GenericApi, TError = Error>(action: TAction) => {
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<TError | unknown>()
     const [results, setResults] = useState<Awaited<ReturnType<TAction>>>()
