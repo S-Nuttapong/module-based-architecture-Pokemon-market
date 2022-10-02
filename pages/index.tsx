@@ -1,8 +1,14 @@
-import type { NextPage, GetServerSideProps } from "next";
 import { PokemonTCG } from "pokemon-tcg-sdk-typescript";
 import {
+  Box,
   Button,
   Divider,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerHeader,
+  DrawerOverlay,
   Flex,
   Grid,
   GridItem,
@@ -11,7 +17,13 @@ import {
   Select,
   Spinner,
   Stack,
+  Table,
+  TableContainer,
   Text,
+  Th,
+  Thead,
+  Tr,
+  useDisclosure,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -21,6 +33,9 @@ import { useSearchFilter } from "../hooks/useSearchFilter";
 import { OptionSelect } from "../components/OptionSelect";
 import { PokemonNameSearch } from "../modules/PokemonNameSearch";
 import { isNonEmptyArray } from "../utils/common";
+import React from "react";
+import { DataTable } from "../components/DataTable";
+import { createColumnHelper } from "@tanstack/react-table";
 
 const pokemonService = {
   getAll: async (params?: PokemonQueryParameters) => {
@@ -33,9 +48,108 @@ const pokemonService = {
   },
 };
 
-const PokemonCart = () => {
-  return <Button bg="bg.button">Cart</Button>;
+type ChakraButtonRef = React.MutableRefObject<HTMLButtonElement | null>;
+
+type UnitConversion = {
+  fromUnit: string;
+  toUnit: string;
+  factor: number;
 };
+
+const MiniCartLineItems = () => {
+  const columnHelper = createColumnHelper<UnitConversion>();
+
+  const data: UnitConversion[] = [
+    {
+      fromUnit: "inches",
+      toUnit: "millimetres (mm)",
+      factor: 25.4,
+    },
+    {
+      fromUnit: "feet",
+      toUnit: "centimetres (cm)",
+      factor: 30.48,
+    },
+    {
+      fromUnit: "yards",
+      toUnit: "metres (m)",
+      factor: 0.91444,
+    },
+  ];
+
+  const columns = [
+    columnHelper.accessor("fromUnit", {
+      cell: (info) => info.getValue(),
+      header: "To convert",
+    }),
+    columnHelper.accessor("toUnit", {
+      cell: (info) => info.getValue(),
+      header: "Into",
+    }),
+    columnHelper.accessor("factor", {
+      cell: (info) => info.getValue(),
+      header: "Multiply by",
+      meta: {
+        isNumeric: true,
+      },
+    }),
+  ];
+
+  return <DataTable columns={columns} data={data} />;
+};
+
+function PokemonCart() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const btnRef = React.useRef<HTMLButtonElement | null>() as ChakraButtonRef;
+
+  return (
+    <>
+      <Button bg="bg.button" ref={btnRef} colorScheme="teal" onClick={onOpen}>
+        Cart
+      </Button>
+      <Drawer
+        isOpen={isOpen}
+        placement="right"
+        onClose={onClose}
+        finalFocusRef={btnRef}
+        size="sm"
+      >
+        <DrawerOverlay bg="bg.overlay" />
+        <DrawerContent bg="bg.secondary">
+          <DrawerCloseButton />
+          <DrawerHeader color="content.primary">
+            <Flex justifyContent="space-between">
+              <Box>
+                <Text fontSize="26px" fontWeight="600" color="content.primary">
+                  Cart
+                </Text>
+                <Text
+                  fontSize="12px"
+                  fontWeight="400"
+                  color="content.secondary"
+                  _hover={{
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                  }}
+                >
+                  clear all
+                </Text>
+              </Box>
+              {/* TODO: replace with close icon instead */}
+              <Button onClick={onClose} bg="bg.button">
+                Close
+              </Button>
+            </Flex>
+          </DrawerHeader>
+
+          <DrawerBody p="0px">
+            <MiniCartLineItems />
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
+    </>
+  );
+}
 
 const TypeOptions = Object.entries(PokemonTCG.Type).map(([_, typeValue]) => ({
   value: typeValue,
@@ -140,7 +254,7 @@ const Home = () => {
           <Heading color="content.primary">Pokemon market</Heading>
           <HStack>
             <PokemonNameSearch onSearch={(name) => searchFilter({ name })} />
-            <Button bg="bg.button">Cart</Button>;
+            <PokemonCart />
           </HStack>
         </Flex>
 

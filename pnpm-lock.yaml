@@ -4,10 +4,12 @@ specifiers:
   '@chakra-ui/react': ^2.3.4
   '@emotion/react': ^11
   '@emotion/styled': ^11
+  '@tanstack/react-table': ^8.5.13
   '@types/lodash': ^4.14.186
   '@types/node': 18.7.23
   '@types/react': 18.0.21
   '@types/react-dom': 18.0.6
+  '@types/react-table': ^7.7.12
   axios: ^0.27.2
   eslint: 8.24.0
   eslint-config-next: 12.3.1
@@ -18,12 +20,15 @@ specifiers:
   pokenode-ts: ^1.17.0
   react: 18.2.0
   react-dom: 18.2.0
+  react-table: ^7.8.0
   typescript: 4.8.4
 
 dependencies:
   '@chakra-ui/react': 2.3.4_4hjho7kgjymeccyd6tzpeh4pdi
   '@emotion/react': 11.10.4_iapumuv4e6jcjznwuxpf4tt22e
   '@emotion/styled': 11.10.4_g3tud4ene45llglqap74b5kkse
+  '@tanstack/react-table': 8.5.13_biqbaboplfbrettd7655fr4n2y
+  '@types/react-table': 7.7.12
   axios: 0.27.2
   framer-motion: 6.5.1_biqbaboplfbrettd7655fr4n2y
   lodash: 4.17.21
@@ -32,6 +37,7 @@ dependencies:
   pokenode-ts: 1.17.0
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
+  react-table: 7.8.0_react@18.2.0
 
 devDependencies:
   '@types/lodash': 4.14.186
@@ -1494,6 +1500,23 @@ packages:
       tslib: 2.4.0
     dev: false
 
+  /@tanstack/react-table/8.5.13_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-k52HsnonKwDZMCIy59HfehTnkJYlqkqyvC+BAV0DyWdN9WmSbVq+Kf+luJVENQnXcnEX47dBHiHAjqZu592ZLQ==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      react: '>=16'
+      react-dom: '>=16'
+    dependencies:
+      '@tanstack/table-core': 8.5.13
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
+
+  /@tanstack/table-core/8.5.13:
+    resolution: {integrity: sha512-kvDRjC7LrLNNNgUMfsBz3nHOwbBLFdosWQ16dfbD9D/OJrvFHRXoUIPzF0MNqqSPghaj7/18fnwXHGypvzoh9Q==}
+    engines: {node: '>=12'}
+    dev: false
+
   /@types/json5/0.0.29:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
     dev: true
@@ -1523,6 +1546,12 @@ packages:
     dependencies:
       '@types/react': 18.0.21
     dev: true
+
+  /@types/react-table/7.7.12:
+    resolution: {integrity: sha512-bRUent+NR/WwtDGwI/BqhZ8XnHghwHw0HUKeohzB5xN3K2qKWYE5w19e7GCuOkL1CXD9Gi1HFy7TIm2AvgWUHg==}
+    dependencies:
+      '@types/react': 18.0.21
+    dev: false
 
   /@types/react/18.0.21:
     resolution: {integrity: sha512-7QUCOxvFgnD5Jk8ZKlUAhVcRj7GuJRjnjjiY/IUBWKgOlnvDvTMLD4RTF7NPyVmbRhNrbomZiOepg7M/2Kj1mA==}
@@ -3429,6 +3458,14 @@ packages:
       invariant: 2.2.4
       react: 18.2.0
       tslib: 2.4.0
+    dev: false
+
+  /react-table/7.8.0_react@18.2.0:
+    resolution: {integrity: sha512-hNaz4ygkZO4bESeFfnfOft73iBUj8K5oKi1EcSHPAibEydfsX2MyU6Z8KCr3mv3C9Kqqh71U+DhZkFvibbnPbA==}
+    peerDependencies:
+      react: ^16.8.3 || ^17.0.0-0 || ^18.0.0
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /react/18.2.0:
