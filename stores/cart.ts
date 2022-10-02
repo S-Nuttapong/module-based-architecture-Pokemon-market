@@ -1,43 +1,14 @@
 import create from 'zustand'
 
 import { IPokemonCard } from '../@types/pokemonAPIs'
-import { PartialExcept } from '../@types/type-utils/partial'
+import { CartItemID, IPokemonCartItem, QuantityChangePayload, PokemonCartStoreAPIs, IPokemonCart } from '../@types/pokemonCartAPIs'
 
-type CartItemID = string
-
-type QuantityChangePayload = { id: CartItemID, quantity: number }
-
-interface IPokemonCartItem extends IPokemonCard {
-    quantity: number
-}
-
-interface IPokemonCart {
-    total: number,
-    currency: string,
-    cartItemIds: CartItemID[]
-    cartItemById: Record<CartItemID, IPokemonCartItem>,
-}
-
-interface CartState {
-    total: number,
-    currency: string,
-    cartItemIds: CartItemID[]
-    cartItemById: Record<CartItemID, IPokemonCartItem>,
+interface CartState extends IPokemonCart {
     initializeCart: () => Promise<void>
     addToCart: (item: IPokemonCard) => Promise<void>,
     clearAllItems: () => Promise<void>
     increaseQuantity: (payload: QuantityChangePayload) => Promise<void>
     decreaseQuantity: (payload: QuantityChangePayload) => Promise<void>
-}
-
-type CartMutationResults<K extends keyof IPokemonCart = "total"> = PartialExcept<IPokemonCart, K>
-
-type PokemonCartStoreAPIs = {
-    addToCart: (item: IPokemonCard) => Promise<CartMutationResults>
-    increaseQuantity: (payload: QuantityChangePayload) => Promise<CartMutationResults>
-    decreaseQuantity: (payload: QuantityChangePayload) => Promise<CartMutationResults>
-    clearAllItems: () => Promise<{ status: 'Success' | 'Fail' }>
-    fetch: () => Promise<IPokemonCart>
 }
 
 export const pokemonCartStoreFactory = (apis: PokemonCartStoreAPIs) => create<CartState>()((set) => ({
