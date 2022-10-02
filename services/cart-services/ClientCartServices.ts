@@ -1,5 +1,5 @@
 import { safeParseJSON } from "../../utils/safeParseJSON"
-import { cartServiceFactory, IPokemonCart } from "./cartServicesFactory"
+import { cartServicesFactory, IPokemonCart } from "./cartServicesFactory"
 
 
 type CartFields = keyof IPokemonCart
@@ -13,7 +13,7 @@ type CartFields = keyof IPokemonCart
 export const ClientCartServices = (storage = localStorage) => {
     const getItem = <TField extends CartFields>(key: TField, fallback?: IPokemonCart[TField]) => safeParseJSON<IPokemonCart[TField]>(storage.getItem(key), fallback)
     const setItem = <TField extends CartFields>(key: TField, value: IPokemonCart[TField]) => storage.setItem(key, JSON.stringify(value))
-    return cartServiceFactory({
+    return cartServicesFactory({
         addToCart: async (item) => {
             const cartItemById = getItem('cartItemById', {})
             const cartItemIds = getItem('cartItemIds', [])

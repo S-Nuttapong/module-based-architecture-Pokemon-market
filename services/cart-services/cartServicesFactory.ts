@@ -30,4 +30,4 @@ export interface ICartServices {
 /**
  * identity function to help guide creating the service properly
  */
-export const cartServiceFactory = (apiResolvers: ICartServices) => apiResolvers
+export const cartServicesFactory = (apiResolvers: ICartServices) => apiResolvers
