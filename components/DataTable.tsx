@@ -14,7 +14,7 @@ export type DataTableProps<Data extends object> = {
 };
 
 /**
- * @todo: support sorting
+ * @todo: support sorting, expose styles
  * @returns
  */
 export function DataTable<Data extends object>({
