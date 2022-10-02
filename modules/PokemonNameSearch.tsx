@@ -27,6 +27,9 @@ export const PokemonNameSearch = (props: IPokemonSearch) => {
       w="173px"
       color="content.primary"
       placeholder="Search by name"
+      borderRadius="8px"
+      borderWidth="1px"
+      borderColor="border.primary"
       value={searchTerm}
       onChange={handleChange}
       {...rest}

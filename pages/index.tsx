@@ -60,11 +60,21 @@ interface IPokemonFilter {
 
 const PokemonFilter = ({ onFilter }: IPokemonFilter) => (
   <HStack spacing="16px">
-    <Select minW="max-content" color="content.primary" placeholder="Set" />
+    <Select
+      minW="max-content"
+      color="content.primary"
+      placeholder="Set"
+      borderRadius="8px"
+      borderWidth="1px"
+      borderColor="border.primary"
+    />
     <OptionSelect
       minW="max-content"
       color="content.primary"
       placeholder="Rarity"
+      borderRadius="8px"
+      borderWidth="1px"
+      borderColor="border.primary"
       options={RarityOptions}
       onChange={(e) => onFilter({ rarity: e.target.value })}
     />
@@ -72,6 +82,9 @@ const PokemonFilter = ({ onFilter }: IPokemonFilter) => (
       minW="max-content"
       color="content.primary"
       placeholder="Type"
+      borderRadius="8px"
+      borderWidth="1px"
+      borderColor="border.primary"
       options={TypeOptions}
       onChange={(e) => onFilter({ type: e.target.value })}
     />
@@ -131,7 +144,7 @@ const Home = () => {
           </HStack>
         </Flex>
 
-        <Divider color="border.divider" />
+        <Divider borderColor="border.primary" />
 
         {/* filter */}
         <Flex w="100%" justifyContent="space-between" alignItems="center">

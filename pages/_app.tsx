@@ -25,6 +25,7 @@ const colors = {
   },
   border: {
     divider: "#FFFFFF14",
+    primary: "#393C49",
   },
   content: {
     primary: "#FFFFFF",
