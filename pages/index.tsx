@@ -11,7 +11,6 @@ import {
   Input,
   InputProps,
   Select,
-  SelectProps,
   Spinner,
   Stack,
   Text,
@@ -25,8 +24,9 @@ import {
 } from "../types";
 import { PokemonCard } from "../modules/PokemonCard";
 import { useDebounce } from "../hooks/useDebounce";
-import { useAsync } from "../hooks/useAsync";
-import merge from "lodash/merge";
+import { useSearchFilter } from "../hooks/useSearchFilter";
+import { OptionSelect } from "../components/OptionSelect";
+import { noop } from "lodash";
 
 const pokemonService = {
   getAll: async (params?: PokemonQueryParameters) => {
@@ -48,8 +48,6 @@ interface IPokemonSearch extends Omit<InputProps, "onChange" | "value"> {
   onSearch?: OnNameSearch;
   searchDelay?: number;
 }
-
-const noop = <T extends any>(_: T) => {};
 
 const PokemonNameSearch = (props: IPokemonSearch) => {
   const { onSearch = noop, searchDelay, ...rest } = props;
@@ -75,27 +73,6 @@ const PokemonNameSearch = (props: IPokemonSearch) => {
     />
   );
 };
-
-type OptionValue = string | ReadonlyArray<string> | number | undefined;
-
-type Option<T extends OptionValue> = { value: T; label: string; id?: string };
-interface IOptionSelect<T extends OptionValue> extends SelectProps {
-  options: Option<T>[];
-}
-
-function OptionSelect<T extends OptionValue>(props: IOptionSelect<T>) {
-  const { options, ...selectProps } = props;
-  return (
-    <Select {...selectProps}>
-      {options.map(({ label, value, id }, index) => (
-        //note: should be save to use index here, as we render static options list
-        <option key={id || index} value={value}>
-          {label}
-        </option>
-      ))}
-    </Select>
-  );
-}
 
 const TypeOptions = Object.entries(PokemonTCG.Type).map(([_, typeValue]) => ({
   value: typeValue,
@@ -144,7 +121,7 @@ interface IPokemonCardList {
 
 const PokemonCardsList = ({ pokemonList = [] }: IPokemonCardList) => (
   <Grid
-    gridTemplateColumns="repeat(auto-fill, minmax(150px,1fr) )"
+    gridTemplateColumns="repeat(auto-fill, minmax(10px,1fr) )"
     columnGap="16px"
     rowGap="26px"
   >
@@ -155,41 +132,6 @@ const PokemonCardsList = ({ pokemonList = [] }: IPokemonCardList) => (
     ))}
   </Grid>
 );
-
-const isTruthy = (value: any) => !!value;
-
-const isFalsy = (value: any) => !value;
-
-//name search do wild card
-//types search do nothing
-//rarity do exact match
-const useSearchFilter = () => {
-  const [searchTerms, setSearchTerm] = useState({
-    set: "",
-    rarity: "",
-    type: "",
-    name: "",
-  });
-
-  const searchFilterHandler = async (terms: Partial<typeof searchTerms>) => {
-    const newTerms = merge({}, searchTerms, terms);
-    const { name, set, rarity, type } = newTerms;
-    const areAllSearchTermsCleared = [name, set, rarity, type].every(isFalsy);
-    const rarityParam = rarity ? ` !rarity:"${rarity}"` : "";
-    const typesParam = type ? ` types:${type}` : "";
-    const query = `name:${name}*${typesParam}${rarityParam}`;
-
-    setSearchTerm(newTerms);
-
-    console.debug({ query, areAllSearchTermsCleared, newTerms });
-
-    if (areAllSearchTermsCleared) return [];
-
-    return await PokemonTCG.findCardsByQueries({ pageSize: 20, q: query });
-  };
-
-  return useAsync(searchFilterHandler);
-};
 
 const Home = () => {
   const [pokemonList, setPokemon] = useState([] as IPokemonCard[]);
