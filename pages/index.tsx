@@ -17,12 +17,7 @@ import {
   Select,
   Spinner,
   Stack,
-  Table,
-  TableContainer,
   Text,
-  Th,
-  Thead,
-  Tr,
   useDisclosure,
 } from "@chakra-ui/react";
 import axios from "axios";
@@ -36,6 +31,7 @@ import { isNonEmptyArray } from "../utils/common";
 import React from "react";
 import { DataTable } from "../components/DataTable";
 import { createColumnHelper } from "@tanstack/react-table";
+import { usePokemonCartStore } from "../stores/cart";
 
 const pokemonService = {
   getAll: async (params?: PokemonQueryParameters) => {
@@ -56,9 +52,10 @@ type UnitConversion = {
   factor: number;
 };
 
-const useMiniCartLinItems = () => {};
-
 const MiniCartLineItems = () => {
+  const cartItemById = usePokemonCartStore((state) => state.cartItemById);
+  const cartIds = usePokemonCartStore((state) => state.cartItemIds);
+
   const columnHelper = createColumnHelper<UnitConversion>();
 
   const data: UnitConversion[] = [
@@ -96,6 +93,8 @@ const MiniCartLineItems = () => {
       },
     }),
   ];
+
+  console.debug({ cartIds, cartItemById });
 
   return <DataTable columns={columns} data={data} />;
 };
@@ -227,17 +226,20 @@ const PokemonCardsList = ({ pokemonList = [] }: IPokemonCardList) => (
 
 const Home = () => {
   const [pokemonList, setPokemon] = useState([] as IPokemonCard[]);
+  const initializeCart = usePokemonCartStore((state) => state.initializeCart);
+  const fetchPokemonList = async () => {
+    const params: PokemonQueryParameters = { page: 1, pageSize: 20 };
+    try {
+      const cards = await pokemonService.getAll(params);
+      setPokemon(cards);
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   useEffect(() => {
-    (async () => {
-      const params: PokemonQueryParameters = { page: 1, pageSize: 20 };
-      try {
-        const cards = await pokemonService.getAll(params);
-        setPokemon(cards);
-      } catch (e) {
-        console.error(e);
-      }
-    })();
+    fetchPokemonList();
+    initializeCart();
   }, []);
 
   const [data, searchFilter] = useSearchFilter();
@@ -278,8 +280,6 @@ const Home = () => {
             }
           />
         )}
-
-        {}
       </Stack>
     </Flex>
   );

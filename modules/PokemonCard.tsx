@@ -1,8 +1,10 @@
 import { Flex, Text, Stack, HStack, Button, Box } from "@chakra-ui/react";
 import Image from "next/image";
 import { IPokemonCard } from "../@types/pokemonAPIs";
+import { usePokemonCartStore } from "../stores/cart";
 
 export const PokemonCard = (props: IPokemonCard) => {
+  const addToCart = usePokemonCartStore((state) => state.addToCart);
   return (
     <Box h="300px">
       <Flex h="50%" position="relative" justifyContent="center">
@@ -44,7 +46,9 @@ export const PokemonCard = (props: IPokemonCard) => {
             <Text fontSize="12px">$2.29</Text>
             <Text fontSize="12px">Out of stock</Text>
           </HStack>
-          <Button bg="bg.overlay">Add to cart</Button>
+          <Button bg="bg.overlay" onClick={() => addToCart(props)}>
+            Add to cart
+          </Button>
         </Stack>
       </Flex>
     </Box>
