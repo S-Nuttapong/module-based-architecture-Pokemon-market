@@ -27,7 +27,7 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { IPokemonCard, PokemonQueryParameters } from "../types";
+import { IPokemonCard, PokemonQueryParameters } from "../@types/pokemonAPIs";
 import { PokemonCard } from "../modules/PokemonCard";
 import { useSearchFilter } from "../hooks/useSearchFilter";
 import { OptionSelect } from "../components/OptionSelect";

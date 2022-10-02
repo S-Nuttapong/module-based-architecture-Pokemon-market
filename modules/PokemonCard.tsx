@@ -1,6 +1,6 @@
 import { Flex, Text, Stack, HStack, Button, Box } from "@chakra-ui/react";
 import Image from "next/image";
-import { IPokemonCard } from "../types";
+import { IPokemonCard } from "../@types/pokemonAPIs";
 
 export const PokemonCard = (props: IPokemonCard) => {
   return (

@@ -1,7 +1,7 @@
 import create from 'zustand'
 
 import { IPokemonCard } from '../@types/pokemonAPIs'
-import { CartItemID, IPokemonCartItem, QuantityChangePayload, PokemonCartStoreAPIs, IPokemonCart } from '../@types/pokemonCartAPIs'
+import { QuantityChangePayload, PokemonCartStoreAPIs, IPokemonCart } from '../@types/pokemonCartAPIs'
 
 interface CartState extends IPokemonCart {
     initializeCart: () => Promise<void>
