@@ -1,8 +1,8 @@
 import { Input, InputProps } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { InputChangeHandler } from "../types";
 import { useDebounce } from "../hooks/useDebounce";
 import { noop } from "lodash";
+import { InputChangeHandler } from "../@types/eventHandlers";
 
 type OnNameSearch = (value: string) => void;
 interface IPokemonSearch extends Omit<InputProps, "onChange" | "value"> {
