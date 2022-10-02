@@ -8,8 +8,6 @@ import {
   GridItem,
   Heading,
   HStack,
-  Input,
-  InputProps,
   Select,
   Spinner,
   Stack,
@@ -17,16 +15,11 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import {
-  InputChangeHandler,
-  IPokemonCard,
-  PokemonQueryParameters,
-} from "../types";
+import { IPokemonCard, PokemonQueryParameters } from "../types";
 import { PokemonCard } from "../modules/PokemonCard";
-import { useDebounce } from "../hooks/useDebounce";
 import { useSearchFilter } from "../hooks/useSearchFilter";
 import { OptionSelect } from "../components/OptionSelect";
-import { noop } from "lodash";
+import { PokemonNameSearch } from "../modules/PokemonNameSearch";
 
 const pokemonService = {
   getAll: async (params?: PokemonQueryParameters) => {
@@ -41,37 +34,6 @@ const pokemonService = {
 
 const PokemonCart = () => {
   return <Button bg="bg.button">Cart</Button>;
-};
-
-type OnNameSearch = (value: string) => void;
-interface IPokemonSearch extends Omit<InputProps, "onChange" | "value"> {
-  onSearch?: OnNameSearch;
-  searchDelay?: number;
-}
-
-const PokemonNameSearch = (props: IPokemonSearch) => {
-  const { onSearch = noop, searchDelay, ...rest } = props;
-  const [searchTerm, setSearchTerm] = useState("");
-  const debouncedSearchTerm = useDebounce(searchTerm, searchDelay);
-
-  const handleChange: InputChangeHandler = (e) => {
-    setSearchTerm(e.target.value);
-  };
-
-  useEffect(() => {
-    onSearch(debouncedSearchTerm);
-  }, [debouncedSearchTerm]);
-
-  return (
-    <Input
-      w="173px"
-      color="content.primary"
-      placeholder="Search by name"
-      value={searchTerm}
-      onChange={handleChange}
-      {...rest}
-    />
-  );
 };
 
 const TypeOptions = Object.entries(PokemonTCG.Type).map(([_, typeValue]) => ({
