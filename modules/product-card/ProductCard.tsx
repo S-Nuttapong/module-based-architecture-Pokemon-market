@@ -42,6 +42,7 @@ export const ProductCard = (props: IPokemonCard) => {
         <Stack spacing="8px" alignItems="center">
           <HStack
             divider={<Box w="4px" h="4px" bg="white" borderRadius="4px" />}
+            minW="max-content"
           >
             <Text fontSize="12px">$2.29</Text>
             <Text fontSize="12px">Out of stock</Text>
