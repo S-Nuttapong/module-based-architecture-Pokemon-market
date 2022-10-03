@@ -41,7 +41,16 @@ export const ProductCard = (props: IPokemonCard) => {
         <Text textAlign="center">{props.name}</Text>
         <Stack spacing="8px" alignItems="center">
           <HStack
-            divider={<Box w="4px" h="4px" bg="white" borderRadius="4px" />}
+            divider={
+              <Box
+                w="4px"
+                h="4px"
+                bg="button.disabled"
+                borderRadius="4px"
+                //Hack: making HStack css class respect the override style
+                borderLeftWidth="0px !important"
+              />
+            }
             minW="max-content"
           >
             <Text fontSize="12px">$2.29</Text>

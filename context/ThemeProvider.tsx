@@ -16,7 +16,7 @@ const colors = {
   button: {
     primary: "#363946",
     secondary: "#EA7C69",
-    disabled: "#2e303e",
+    disabled: "#312f3c",
     focus: "#4d4f5a",
   },
   bg: {
