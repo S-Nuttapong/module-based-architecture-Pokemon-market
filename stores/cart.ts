@@ -4,15 +4,18 @@ import { IPokemonCard } from '../@types/pokemonAPIs'
 import { ICartServices, IPokemonCart, QuantityChangePayload } from '../services/cart-services/cartServicesFactory'
 import { ClientCartServices } from '../services/cart-services/ClientCartServices'
 import { immer } from 'zustand/middleware/immer'
-export interface CartState extends IPokemonCart {
+import { noop } from '../utils/common'
+import { devtools } from 'zustand/middleware'
+
+export interface ICartState extends IPokemonCart {
     isLoading: true | false, //note: immer can not infer true/false as boolean, so we have to assign literal type instead
     initializeCart: () => Promise<void>
     addToCart: (item: IPokemonCard) => Promise<void>,
     clearAllItems: () => Promise<void>
-    updateItemQuantity: (payload: QuantityChangePayload) => Promise<void>
+    updateItemQuantity: (payload: QuantityChangePayload & { onFail?: (currentState: IPokemonCart) => void }) => Promise<void>
 }
 
-export const pokemonCartStoreFactory = (apis: ICartServices) => create<CartState>()(immer((set) => ({
+export const pokemonCartStoreFactory = (apis: ICartServices) => create<ICartState>()(immer(devtools((set, get) => ({
     total: 0,
     isLoading: false,
     currency: 'USD',
@@ -40,14 +43,20 @@ export const pokemonCartStoreFactory = (apis: ICartServices) => create<CartState
             state.isLoading = false
         })
     },
-    updateItemQuantity: async ({ id, quantity }) => {
+    updateItemQuantity: async ({ id, quantity, onFail = noop }) => {
         set({ isLoading: true })
-        const { total, item } = await apis.updateItemQuantity({ id, quantity })
-        set((state) => {
-            state.cartItemById[item.id] = item
-            state.total = total
-            state.isLoading = false
-        })
+
+        try {
+            const { total, item } = await apis.updateItemQuantity({ id, quantity })
+            set((state) => {
+                state.cartItemById[item.id] = item
+                state.total = total
+                state.isLoading = false
+            })
+        }
+        catch (e) {
+            onFail(get())
+        }
     },
     clearAllItems: async () => {
         set({ isLoading: true })
@@ -59,7 +68,7 @@ export const pokemonCartStoreFactory = (apis: ICartServices) => create<CartState
             state.isLoading = false
         })
     }
-})))
+}))))
 
 //TODO: port the real BE services once ready
 export const usePokemonCartStore = pokemonCartStoreFactory(ClientCartServices(typeof window === 'undefined' ? {} as Storage : localStorage))

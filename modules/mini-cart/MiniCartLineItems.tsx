@@ -1,6 +1,5 @@
 import {
   Flex,
-  Spacer,
   Stack,
   TableCellProps,
   TableHeadProps,
