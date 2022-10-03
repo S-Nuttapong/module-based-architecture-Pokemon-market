@@ -30,7 +30,12 @@ export function DataTable<Data extends object>({
   });
 
   return (
-    <Table color="content.primary" variant="unstyled">
+    <Table
+      color="content.primary"
+      variant="unstyled"
+      height="fit-content"
+      style={{ borderCollapse: "separate", borderSpacing: "0 1em" }}
+    >
       <Thead textTransform="capitalize">
         {table.getHeaderGroups().map((headerGroup) => (
           <Tr key={headerGroup.id}>
@@ -63,7 +68,7 @@ export function DataTable<Data extends object>({
               // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
               const cellStyles = get(cell.column.columnDef.meta, "cell") ?? {};
               return (
-                <Td key={cell.id} p="0" {...cellStyles}>
+                <Td key={cell.id} p="0" h="100%" {...cellStyles}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </Td>
               );

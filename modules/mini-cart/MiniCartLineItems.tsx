@@ -1,5 +1,6 @@
 import {
   Flex,
+  Spacer,
   Stack,
   TableCellProps,
   TableHeadProps,
@@ -28,13 +29,19 @@ const ItemColumn = miniCartChildFactory(({ id }) => {
   );
 });
 const QuantityColumn = miniCartChildFactory(({ id }) => (
-  <Stack>
+  <Flex height="100%" flexDir="column" justifyContent="space-between">
     <ItemDetail id={id} />
     <QuantityDisplay id={id} />
-  </Stack>
+  </Flex>
 ));
 const PriceColumn = miniCartChildFactory(({ id }) => (
-  <Flex flexDir="column" justifyContent="space-between">
+  <Flex
+    height="100%"
+    width="100%"
+    flexDir="column"
+    justifyContent="space-between"
+    alignItems="flex-end"
+  >
     <TotalItemPrice id={id} />
     <IncreaseQuantityButton id={id} />
   </Flex>
@@ -61,8 +68,6 @@ export const MiniCartLineItems = () => {
         meta: {
           cell: {
             p: "0px",
-            display: "flex",
-            alignItems: "",
           } as TableCellProps,
           header: {
             p: "0px",

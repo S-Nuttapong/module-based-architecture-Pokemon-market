@@ -1,4 +1,4 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import React from "react";
 import { usePokemonCartStore } from "../../../stores/cart";
 import { miniCartChildFactory } from "../miniCartChildFactory";
@@ -8,14 +8,15 @@ export const QuantityDisplay = miniCartChildFactory(({ id }) => {
     (state) => state.cartItemById[id].quantity
   );
   return (
-    <Box
-      textAlign="center"
+    <Flex
+      justifyContent="center"
+      alignItems="center"
       bg="button.primary"
       h="54px"
       minW="200px"
       borderRadius="8px"
     >
       <Text color="content.primary">{quantity}</Text>
-    </Box>
+    </Flex>
   );
 });
