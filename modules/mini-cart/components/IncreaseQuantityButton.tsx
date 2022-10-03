@@ -1,7 +1,7 @@
 import { Button } from "@chakra-ui/react";
 import React from "react";
-import { usePokemonCartStore } from "../../stores/cart";
-import { miniCartChildFactory } from "./miniCartChildFactory";
+import { usePokemonCartStore } from "../../../stores/cart";
+import { miniCartChildFactory } from "../miniCartChildFactory";
 
 export const IncreaseQuantityButton = miniCartChildFactory(({ id }) => {
   const updateItemQuantity = usePokemonCartStore(

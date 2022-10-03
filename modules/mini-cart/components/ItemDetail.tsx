@@ -1,8 +1,8 @@
 import { Box, Text } from "@chakra-ui/react";
 import React from "react";
-import { usePokemonCartStore } from "../../stores/cart";
-import { currencyAdder } from "../../utils/currencyAdder";
-import { miniCartChildFactory } from "./miniCartChildFactory";
+import { usePokemonCartStore } from "../../../stores/cart";
+import { currencyAdder } from "../../../utils/currencyAdder";
+import { miniCartChildFactory } from "../miniCartChildFactory";
 
 export const ItemDetail = miniCartChildFactory(({ id }) => {
   const currency = usePokemonCartStore((state) => state.currency);

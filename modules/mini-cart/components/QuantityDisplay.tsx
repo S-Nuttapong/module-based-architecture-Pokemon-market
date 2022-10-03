@@ -1,7 +1,7 @@
 import { Box, Text } from "@chakra-ui/react";
 import React from "react";
-import { usePokemonCartStore } from "../../stores/cart";
-import { miniCartChildFactory } from "./miniCartChildFactory";
+import { usePokemonCartStore } from "../../../stores/cart";
+import { miniCartChildFactory } from "../miniCartChildFactory";
 
 export const QuantityDisplay = miniCartChildFactory(({ id }) => {
   const quantity = usePokemonCartStore(
