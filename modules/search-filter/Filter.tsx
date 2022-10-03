@@ -28,7 +28,6 @@ const RarityOptions = Object.entries(PokemonTCG.Rarity).map(
 const styles: SelectProps = {
   minW: "max-content",
   color: "content.primary",
-  placeholder: "Set",
   borderRadius: "8px",
   borderWidth: "1px",
   borderColor: "border.primary",
@@ -36,14 +35,16 @@ const styles: SelectProps = {
 
 export const PokemonFilter = ({ onFilter }: IPokemonFilter) => (
   <HStack spacing="16px">
-    <Select {...styles} />
+    <Select {...styles} placeholder="Set" />
     <OptionSelect
       {...styles}
+      placeholder="Rarity"
       options={RarityOptions}
       onChange={(e) => onFilter({ rarity: e.target.value })}
     />
     <OptionSelect
       {...styles}
+      placeholder="Type"
       options={TypeOptions}
       onChange={(e) => onFilter({ type: e.target.value })}
     />

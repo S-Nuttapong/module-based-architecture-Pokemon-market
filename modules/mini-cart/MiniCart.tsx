@@ -5,6 +5,7 @@ import {
   DrawerBody,
   DrawerCloseButton,
   DrawerContent,
+  DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
   Flex,
@@ -12,6 +13,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import React from "react";
+import { MiniCartTotal } from "./ChakraButtonRef";
 import { MiniCartLineItems } from "./MiniCartLineItems";
 
 type ChakraButtonRef = React.MutableRefObject<HTMLButtonElement | null>;
@@ -68,6 +70,10 @@ export function MiniCart() {
           <DrawerBody>
             <MiniCartLineItems />
           </DrawerBody>
+
+          <DrawerFooter>
+            <MiniCartTotal />
+          </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </>
