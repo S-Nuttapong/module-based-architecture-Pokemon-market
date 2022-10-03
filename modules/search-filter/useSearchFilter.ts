@@ -1,8 +1,8 @@
 import { PokemonTCG } from "pokemon-tcg-sdk-typescript";
 import { useState } from "react";
-import { useAsync } from "./useApi";
+import { useAsync } from "../../hooks/useApi";
 import merge from "lodash/merge";
-import { isFalsy } from "../utils/common";
+import { isFalsy } from "../../utils/common";
 
 //name search do wild card
 //types search do nothing

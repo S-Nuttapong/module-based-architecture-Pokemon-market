@@ -1,15 +1,15 @@
 import { Input, InputProps } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { useDebounce } from "../hooks/useDebounce";
+import { useDebounce } from "../../hooks/useDebounce";
 import { noop } from "lodash";
-import { InputChangeHandler } from "../@types/eventHandlers";
+import { InputChangeHandler } from "../../@types/eventHandlers";
 
 type OnNameSearch = (value: string) => void;
 interface IPokemonSearch extends Omit<InputProps, "onChange" | "value"> {
   onSearch?: OnNameSearch;
   searchDelay?: number;
 }
-export const PokemonNameSearch = (props: IPokemonSearch) => {
+export const Search = (props: IPokemonSearch) => {
   const { onSearch = noop, searchDelay, ...rest } = props;
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, searchDelay);
