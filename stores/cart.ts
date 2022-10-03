@@ -6,13 +6,19 @@ import { ClientCartServices } from '../services/cart-services/ClientCartServices
 import { immer } from 'zustand/middleware/immer'
 import { noop } from '../utils/common'
 import { devtools } from 'zustand/middleware'
+import { WithError } from '../@types/type-utils/error'
+
+
+type EventResultHandlers = { onFail?: (currentState: WithError<IPokemonCart>) => void, onSuccess?: (currentState: IPokemonCart) => void }
+
+type WithResultHandlers<TPayload = {}> = TPayload & EventResultHandlers
 
 export interface ICartState extends IPokemonCart {
     isLoading: true | false, //note: immer can not infer true/false as boolean, so we have to assign literal type instead
     initializeCart: () => Promise<void>
     addToCart: (item: IPokemonCard) => Promise<void>,
-    clearAllItems: () => Promise<void>
-    updateItemQuantity: (payload: QuantityChangePayload & { onFail?: (currentState: IPokemonCart) => void }) => Promise<void>
+    clearAllItems: (payload?: WithResultHandlers) => Promise<void>
+    updateItemQuantity: (payload: WithResultHandlers<QuantityChangePayload>) => Promise<void>
 }
 
 export const pokemonCartStoreFactory = (apis: ICartServices) => create<ICartState>()(immer(devtools((set, get) => ({
@@ -44,9 +50,8 @@ export const pokemonCartStoreFactory = (apis: ICartServices) => create<ICartStat
         })
     },
     updateItemQuantity: async ({ id, quantity, onFail = noop }) => {
-        set({ isLoading: true })
-
         try {
+            set({ isLoading: true })
             const { total, item } = await apis.updateItemQuantity({ id, quantity })
             set((state) => {
                 state.cartItemById[item.id] = item
@@ -54,19 +59,27 @@ export const pokemonCartStoreFactory = (apis: ICartServices) => create<ICartStat
                 state.isLoading = false
             })
         }
-        catch (e) {
-            onFail(get())
+        catch (error) {
+            onFail({ ...get(), error })
         }
     },
-    clearAllItems: async () => {
-        set({ isLoading: true })
-        const { status } = await apis.clearAllItems()
-        if (status === 'Fail') return
-        set((state) => {
-            state.cartItemById = {}
-            state.cartItemIds = []
-            state.isLoading = false
-        })
+    clearAllItems: async (payload = {}) => {
+        const { onFail = noop, onSuccess = noop } = payload
+
+        try {
+            set({ isLoading: true })
+            const { status } = await apis.clearAllItems()
+            if (status === 'Fail') return
+            set((state) => {
+                state.cartItemById = {}
+                state.cartItemIds = []
+                state.isLoading = false
+            })
+            onSuccess(get())
+        }
+        catch (error) {
+            onFail({ ...get(), error })
+        }
     }
 }))))
 

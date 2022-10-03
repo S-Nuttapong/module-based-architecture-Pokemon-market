@@ -13,15 +13,20 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import React from "react";
+import { usePokemonCartStore } from "../../stores/cart";
 import { MiniCartTotal } from "./ChakraButtonRef";
 import { MiniCartLineItems } from "./MiniCartLineItems";
+import { useItemQuantityCounter } from "./useItemsQuantityCounter";
 
 type ChakraButtonRef = React.MutableRefObject<HTMLButtonElement | null>;
 
 export function MiniCart() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef<HTMLButtonElement | null>() as ChakraButtonRef;
-
+  const clearAll = usePokemonCartStore((state) => state.clearAllItems);
+  const clearIntermediateQuantity = useItemQuantityCounter(
+    (state) => state.clearAll
+  );
   return (
     <>
       <Button
@@ -56,6 +61,9 @@ export function MiniCart() {
                     textDecoration: "underline",
                     cursor: "pointer",
                   }}
+                  onClick={() =>
+                    clearAll({ onSuccess: clearIntermediateQuantity })
+                  }
                 >
                   clear all
                 </Text>
