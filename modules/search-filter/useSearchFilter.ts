@@ -1,6 +1,6 @@
 import { PokemonTCG } from "pokemon-tcg-sdk-typescript";
 import { useState } from "react";
-import { useAsync } from "../../hooks/useApi";
+import { useApi } from "../../hooks/useApi";
 import merge from "lodash/merge";
 import { isFalsy } from "../../utils/common";
 
@@ -30,5 +30,5 @@ export const useSearchFilter = () => {
     return await PokemonTCG.findCardsByQueries({ pageSize: 20, q: query });
   };
 
-  return useAsync(searchFilterHandler);
+  return useApi(searchFilterHandler);
 };
