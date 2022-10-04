@@ -19,8 +19,8 @@ import { usePokemonCartStore } from "../stores/cart";
 
 import { PokemonFilter } from "../modules/search-filter/Filter";
 import { MiniCart } from "../modules/mini-cart/MiniCart";
-import { PokemonCardsList } from "../modules/product-card/ProductCardsList";
-import { Search } from "../modules/search-filter/Search";
+import { PokemonCardGrid } from "../modules/product-card/ProductCardGrid";
+import { ISearch, Search } from "../modules/search-filter/Search";
 
 const pokemonService = {
   getAll: async (params?: PokemonQueryParameters) => {
@@ -32,6 +32,14 @@ const pokemonService = {
     return results.data as IPokemonCard[];
   },
 };
+
+const DesktopSearch = (props: ISearch) => (
+  <Search w="fit-content" {...props} display={["none", "none", "flex"]} />
+);
+
+const MobileSearch = (props: ISearch) => (
+  <Search w="100%" {...props} display={["flex", "flex", "none"]} />
+);
 
 const Home = () => {
   const [pokemonList, setPokemon] = useState([] as IPokemonCard[]);
@@ -59,28 +67,45 @@ const Home = () => {
       minH="100vh"
       w="100vw"
       justifyContent="center"
-      px="123px"
+      px={[0, "30px", "60px", "120px"]}
     >
-      <Stack w="100%" padding="30px" spacing="24px">
-        <Flex w="100%" justifyContent="space-between">
-          <Heading color="content.primary">Pokemon market</Heading>
-          <HStack>
-            <Search onSearch={(name) => searchFilter({ name })} />
+      <Stack w="100%" padding={["20px", "20px", "30px", "30px"]} spacing="24px">
+        <HStack w="100%" justifyContent="space-between">
+          <Heading
+            color="content.primary"
+            minW="max-content"
+            fontSize="26px"
+            fontWeight="600"
+          >
+            Pokemon market
+          </Heading>
+          <HStack w="100%" justifyContent="flex-end" alignItems="baseline">
+            <DesktopSearch onSearch={(name) => searchFilter({ name })} />
             <MiniCart />
           </HStack>
-        </Flex>
+        </HStack>
+
+        <MobileSearch onSearch={(name) => searchFilter({ name })} />
 
         <Divider borderColor="border.primary" />
 
-        <Flex w="100%" justifyContent="space-between" alignItems="center">
-          <Text color="content.primary">Choose Card</Text>
+        <Flex
+          w="100%"
+          justifyContent="space-between"
+          alignItems="center"
+          flexWrap="wrap"
+          gap="24px"
+        >
+          <Text color="content.primary" fontSize="18px" fontWeight="600">
+            Choose Card
+          </Text>
           <PokemonFilter onFilter={(value) => searchFilter(value)} />
         </Flex>
 
         {data.isLoading ? (
           <Spinner />
         ) : (
-          <PokemonCardsList
+          <PokemonCardGrid
             pokemonList={
               isNonEmptyArray(data.results) ? data.results : pokemonList
             }

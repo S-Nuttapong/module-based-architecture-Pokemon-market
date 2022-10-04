@@ -6,7 +6,7 @@ import { ProductCard } from "./ProductCard";
 interface IPokemonCardList {
   pokemonList: IPokemonCard[];
 }
-export const PokemonCardsList = ({ pokemonList = [] }: IPokemonCardList) => (
+export const PokemonCardGrid = ({ pokemonList = [] }: IPokemonCardList) => (
   <Grid
     gridTemplateColumns="repeat(auto-fill, minmax(150px,1fr) )"
     columnGap="16px"

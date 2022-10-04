@@ -1,15 +1,23 @@
-import { Input, InputProps } from "@chakra-ui/react";
+import {
+  Input,
+  InputGroup,
+  InputGroupProps,
+  InputLeftElement,
+  InputProps,
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useDebounce } from "../../hooks/useDebounce";
-import { noop } from "lodash";
 import { InputChangeHandler } from "../../@types/eventHandlers";
+import { SearchIcon } from "@chakra-ui/icons";
+import { noop } from "../../utils/common";
 
 type OnNameSearch = (value: string) => void;
-interface IPokemonSearch extends Omit<InputProps, "onChange" | "value"> {
+export interface ISearch extends InputGroupProps {
   onSearch?: OnNameSearch;
   searchDelay?: number;
 }
-export const Search = (props: IPokemonSearch) => {
+
+export const Search = (props: ISearch) => {
   const { onSearch = noop, searchDelay, ...rest } = props;
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, searchDelay);
@@ -23,16 +31,20 @@ export const Search = (props: IPokemonSearch) => {
   }, [debouncedSearchTerm]);
 
   return (
-    <Input
-      w="173px"
-      color="content.primary"
-      placeholder="Search by name"
-      borderRadius="8px"
-      borderWidth="1px"
-      borderColor="border.primary"
-      value={searchTerm}
-      onChange={handleChange}
-      {...rest}
-    />
+    <InputGroup {...rest}>
+      <InputLeftElement pointerEvents="none" display="inherit">
+        <SearchIcon color="content.primary" display="inherit" />
+      </InputLeftElement>
+      <Input
+        color="content.primary"
+        placeholder="Search by name"
+        borderRadius="8px"
+        borderWidth="1px"
+        borderColor="border.primary"
+        value={searchTerm}
+        onChange={handleChange}
+        display="inherit"
+      />
+    </InputGroup>
   );
 };

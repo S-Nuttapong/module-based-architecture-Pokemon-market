@@ -1,5 +1,5 @@
 import { PokemonTCG } from "pokemon-tcg-sdk-typescript";
-import { color, HStack, SelectProps } from "@chakra-ui/react";
+import { Flex, HStack, SelectProps } from "@chakra-ui/react";
 import { OptionSelect } from "../../components/OptionSelect";
 import { useApi } from "../../hooks/useApi";
 import React, { useEffect, useMemo } from "react";
@@ -28,11 +28,13 @@ const rarityOptions = Object.entries(PokemonTCG.Rarity).map(
 );
 
 const styles: SelectProps = {
-  minW: "fit-content",
+  w: "fit-content",
   color: "content.primary",
   borderRadius: "8px",
   borderWidth: "1px",
   borderColor: "border.primary",
+  flexGrow: 1,
+  flexBasis: "calc(( 25rem - 100%) * 999)",
 };
 
 const SetFilter = ({ onFilter, isLoading }: IPokemonFilter) => {
@@ -42,7 +44,7 @@ const SetFilter = ({ onFilter, isLoading }: IPokemonFilter) => {
     () =>
       data?.results?.map((result) => ({
         value: result.id,
-        label: result.name,
+        label: result.id,
       })) || [],
     [data.results]
   );
@@ -54,24 +56,22 @@ const SetFilter = ({ onFilter, isLoading }: IPokemonFilter) => {
   return (
     <OptionSelect
       {...styles}
-      minW="280px"
+      flexGrow={1}
       placeholder="Set"
       isDisabled={data.isLoading || isLoading}
       options={setOptions}
-      onChange={(e) => {
-        console.debug("filter set", e);
-        onFilter({ set: e.target.value });
-      }}
+      onChange={(e) => onFilter({ set: e.target.value })}
     />
   );
 };
 
 export const PokemonFilter = ({ onFilter, isLoading }: IPokemonFilter) => (
-  <HStack spacing="16px">
+  <Flex gap="16px" wrap="wrap">
     <SetFilter onFilter={onFilter} isLoading={isLoading} />
     <OptionSelect
       {...styles}
       placeholder="Rarity"
+      flexGrow={1.5}
       options={rarityOptions}
       isDisabled={isLoading}
       onChange={(e) => onFilter({ rarity: e.target.value })}
@@ -83,5 +83,5 @@ export const PokemonFilter = ({ onFilter, isLoading }: IPokemonFilter) => (
       isDisabled={isLoading}
       onChange={(e) => onFilter({ type: e.target.value })}
     />
-  </HStack>
+  </Flex>
 );

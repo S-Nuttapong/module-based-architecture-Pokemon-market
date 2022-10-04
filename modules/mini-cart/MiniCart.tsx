@@ -1,6 +1,6 @@
 import {
   Box,
-  Button,
+  CloseButton,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
@@ -9,10 +9,12 @@ import {
   DrawerHeader,
   DrawerOverlay,
   Flex,
+  IconButton,
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { FC } from "react";
+import { ShoppingBagIcon } from "../../public/icons/ShoppingBagIcon";
 import { usePokemonCartStore } from "../../stores/cart";
 import { MiniCartTotal } from "./ChakraButtonRef";
 import { MiniCartLineItems } from "./MiniCartLineItems";
@@ -20,7 +22,7 @@ import { useItemQuantityCounter } from "./useItemsQuantityCounter";
 
 type ChakraButtonRef = React.MutableRefObject<HTMLButtonElement | null>;
 
-export function MiniCart() {
+export const MiniCart: FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef<HTMLButtonElement | null>() as ChakraButtonRef;
   const clearAll = usePokemonCartStore((state) => state.clearAllItems);
@@ -29,14 +31,23 @@ export function MiniCart() {
   );
   return (
     <>
-      <Button
+      <IconButton
         bg="button.secondary"
         ref={btnRef}
-        colorScheme="teal"
         onClick={onOpen}
-      >
-        Cart
-      </Button>
+        aria-label="Cart"
+        borderRadius="8px"
+        _hover={{
+          boxShadow: "0px 8px 24px rgba(234, 124, 105, 0.32)",
+        }}
+        icon={
+          <ShoppingBagIcon
+            color="button.secondary"
+            boxSize="1em"
+            viewBox="0 0 14 14"
+          />
+        }
+      />
       <Drawer
         isOpen={isOpen}
         placement="right"
@@ -68,10 +79,15 @@ export function MiniCart() {
                   clear all
                 </Text>
               </Box>
-              {/* TODO: replace with close icon instead */}
-              <Button onClick={onClose} bg="button.secondary">
-                Close
-              </Button>
+              <IconButton
+                onClick={onClose}
+                bg="button.secondary"
+                _hover={{
+                  boxShadow: "0px 8px 24px rgba(234, 124, 105, 0.32)",
+                }}
+                aria-label="Close Cart"
+                icon={<CloseButton />}
+              />
             </Flex>
           </DrawerHeader>
 
@@ -86,4 +102,4 @@ export function MiniCart() {
       </Drawer>
     </>
   );
-}
+};

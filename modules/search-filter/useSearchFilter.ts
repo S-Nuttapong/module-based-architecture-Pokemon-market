@@ -23,7 +23,6 @@ export const useSearchFilter = () => {
     const typesQuery = type ? `types:${type}` : "";
     const setQuery = set ? `set.id:${set}` : ""
     const nameQuery = name ? `name:${name}*` : ""
-    const allQueries = [nameQuery, setQuery, typesQuery, rarityQuery]
     const query = [nameQuery, setQuery, typesQuery, rarityQuery].join(' ').trim()
 
     setSearchTerm(newTerms);
