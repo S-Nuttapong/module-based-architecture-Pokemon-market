@@ -19,9 +19,12 @@ export const useSearchFilter = () => {
     const newTerms = merge({}, searchTerms, terms);
     const { name, set, rarity, type } = newTerms;
     const areAllSearchTermsCleared = [name, set, rarity, type].every(isFalsy);
-    const rarityParam = rarity ? ` !rarity:"${rarity}"` : "";
-    const typesParam = type ? ` types:${type}` : "";
-    const query = `name:${name}*${typesParam}${rarityParam}`;
+    const rarityQuery = rarity ? `!rarity:"${rarity}"` : "";
+    const typesQuery = type ? `types:${type}` : "";
+    const setQuery = set ? `set.id:${set}` : ""
+    const nameQuery = name ? `name:${name}*` : ""
+    const allQueries = [nameQuery, setQuery, typesQuery, rarityQuery]
+    const query = [nameQuery, setQuery, typesQuery, rarityQuery].join(' ').trim()
 
     setSearchTerm(newTerms);
 
@@ -32,3 +35,5 @@ export const useSearchFilter = () => {
 
   return useApi(searchFilterHandler);
 };
+
+

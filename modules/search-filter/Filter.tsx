@@ -58,7 +58,10 @@ const SetFilter = ({ onFilter, isLoading }: IPokemonFilter) => {
       placeholder="Set"
       isDisabled={data.isLoading || isLoading}
       options={setOptions}
-      onChange={(e) => onFilter({ set: e.target.value })}
+      onChange={(e) => {
+        console.debug("filter set", e);
+        onFilter({ set: e.target.value });
+      }}
     />
   );
 };
