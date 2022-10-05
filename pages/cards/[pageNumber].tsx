@@ -19,9 +19,9 @@ import {
   SearchStatus,
   useSearchFilter,
 } from "../../modules/search-filter/useSearchFilter";
-import { usePokemonCartStore } from "../../stores/cart";
+import { usePokemonCartStore } from "../../stores/pokemon-cart";
 import { isNonEmptyArray } from "../../utils/common";
-import { pokemonCardServices } from "../../services/pokemon-card-services/pokemonCardServices";
+import { pokemonCardServices } from "../../services/pokemon-cards/pokemonCardServices";
 import { HackPricePoputator } from "../../utils/HackPricePopulator";
 import { ProductCardGrid } from "../../modules/product-card/ProductCardGrid";
 import { SEOMeta } from "../../components/SEOMeta";

@@ -1,6 +1,6 @@
 import isFunction from 'lodash/isFunction'
 import compose from 'lodash/fp/compose'
-import { usePokemonCartStore } from '../stores/cart'
+import { usePokemonCartStore } from '../stores/pokemon-cart'
 import { currencyAdder } from '../utils/currencyAdder'
 import { numberFormatter } from '../utils/numberFormatter'
 

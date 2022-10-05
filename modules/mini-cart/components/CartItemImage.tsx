@@ -2,7 +2,7 @@ import { Flex } from "@chakra-ui/react";
 import React from "react";
 import Image from "next/image";
 import { miniCartChildFactory } from "../miniCartChildFactory";
-import { usePokemonCartStore } from "../../../stores/cart";
+import { usePokemonCartStore } from "../../../stores/pokemon-cart";
 
 export const CartItemImage = miniCartChildFactory(({ id }) => {
   const imgSrc = usePokemonCartStore(

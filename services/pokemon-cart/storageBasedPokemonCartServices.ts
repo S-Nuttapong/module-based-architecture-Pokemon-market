@@ -1,5 +1,5 @@
 import { safeParseJSON } from "../../utils/safeParseJSON"
-import { cartServicesFactory, IPokemonCart } from "./cartServicesFactory"
+import { cartServicesFactory, IPokemonCart } from "./pokemonCartServicesFactory"
 import { nanoid } from 'nanoid'
 
 type CartFields = keyof IPokemonCart

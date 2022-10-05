@@ -16,7 +16,7 @@ import { QuantityDisplay } from "./components/QuantityDisplay";
 import { CartItemImage } from "./components/CartItemImage";
 import { DecreaseQuantityButton } from "./components/DecreaseQuantityButton";
 import { DataTable } from "../../components/DataTable";
-import { usePokemonCartStore } from "../../stores/cart";
+import { usePokemonCartStore } from "../../stores/pokemon-cart";
 import { miniCartChildFactory } from "./miniCartChildFactory";
 
 const ItemColumn = miniCartChildFactory(({ id }) => {

@@ -3,8 +3,7 @@ import isEmpty from "lodash/isEmpty";
 import Link from "next/link";
 import React from "react";
 import { usePriceFormatter } from "../../hooks/usePriceFormatter";
-import { usePokemonCartStore } from "../../stores/cart";
-import { currencyAdder } from "../../utils/currencyAdder";
+import { usePokemonCartStore } from "../../stores/pokemon-cart";
 
 type MiniCartTotalCommonTextProps = {
   label: string;

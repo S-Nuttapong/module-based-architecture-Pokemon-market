@@ -2,7 +2,7 @@ import { Flex, SelectProps } from "@chakra-ui/react";
 import { OptionSelect } from "../../components/OptionSelect";
 import { useApi } from "../../hooks/useApi";
 import React, { useEffect, useMemo } from "react";
-import { pokemonCardServices } from "../../services/pokemon-card-services/pokemonCardServices";
+import { pokemonCardServices } from "../../services/pokemon-cards/pokemonCardServices";
 
 type FilterLabels = "Rarity" | "Type" | "Set";
 

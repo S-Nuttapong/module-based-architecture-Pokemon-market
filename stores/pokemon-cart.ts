@@ -1,12 +1,12 @@
 import create from 'zustand'
-import { ICartServices, IPokemonCart, QuantityChangePayload } from '../services/cart-services/cartServicesFactory'
+import { ICartServices, IPokemonCart, QuantityChangePayload } from '../services/pokemon-cart/pokemonCartServicesFactory'
 
 import { immer } from 'zustand/middleware/immer'
 import { noop } from '../utils/common'
 import { devtools } from 'zustand/middleware'
 import { WithError } from '../@types/type-utils/error'
-import { IPokemonCard } from '../services/pokemon-card-services/pokemonCardServices'
-import { storageBasedCartServices } from '../services/cart-services/storageBasedCartServices'
+import { IPokemonCard } from '../services/pokemon-cards/pokemonCardServices'
+import { storageBasedCartServices } from '../services/pokemon-cart/storageBasedPokemonCartServices'
 
 
 type EventResultHandlers = { onFail?: (currentState: WithError<IPokemonCart>) => void, onSuccess?: (currentState: IPokemonCart) => void }
@@ -21,7 +21,12 @@ export interface ICartState extends IPokemonCart {
     updateItemQuantity: (payload: WithResultHandlers<QuantityChangePayload>) => Promise<void>
 }
 
-export const pokemonCartStoreFactory = (apis: ICartServices) => create<ICartState>()(immer(devtools((set, get) => ({
+/**
+ * factory function for creating cart store hook
+ * @param services cart service this, serve purpose for testing, and porting different services, as long as it adhere to ICartServices 
+ * @returns hook function that contain state and actions of cart
+ */
+export const pokemonCartStoreFactory = (services: ICartServices) => create<ICartState>()(immer(devtools((set, get) => ({
     total: 0,
     isLoading: false,
     currency: 'USD',
@@ -29,7 +34,7 @@ export const pokemonCartStoreFactory = (apis: ICartServices) => create<ICartStat
     cartItemById: {},
     initializeCart: async () => {
         set({ isLoading: true })
-        const cart = await apis.fetch()
+        const cart = await services.fetch()
         set((state) => {
             const { cartItemById, cartItemIds, total, currency } = cart
             state.cartItemById = cartItemById
@@ -41,7 +46,7 @@ export const pokemonCartStoreFactory = (apis: ICartServices) => create<ICartStat
     },
     addToCart: async (payload) => {
         set({ isLoading: true })
-        const { total, item } = await apis.addToCart(payload)
+        const { total, item } = await services.addToCart(payload)
         set((state) => {
             state.cartItemById[item.id] = item
             state.cartItemIds.push(item.id)
@@ -52,7 +57,7 @@ export const pokemonCartStoreFactory = (apis: ICartServices) => create<ICartStat
     updateItemQuantity: async ({ id, quantity, onFail = noop }) => {
         try {
             set({ isLoading: true })
-            const { total, item } = await apis.updateItemQuantity({ id, quantity })
+            const { total, item } = await services.updateItemQuantity({ id, quantity })
 
             console.debug({ total, item })
 
@@ -71,7 +76,7 @@ export const pokemonCartStoreFactory = (apis: ICartServices) => create<ICartStat
 
         try {
             set({ isLoading: true })
-            const { status } = await apis.clearAllItems()
+            const { status } = await services.clearAllItems()
             if (status === 'Fail') return
             set((state) => {
                 state.cartItemById = {}
@@ -86,5 +91,8 @@ export const pokemonCartStoreFactory = (apis: ICartServices) => create<ICartStat
     }
 }))))
 
-//TODO: port the real BE services once ready
+/**
+ * @note: undefined window implies the ssr, also it can't be extracted as variable here, to make it work we must inline like so 
+ * @todo: port the real BE services once ready
+ */
 export const usePokemonCartStore = pokemonCartStoreFactory(storageBasedCartServices(typeof window === 'undefined' ? {} as Storage : localStorage))

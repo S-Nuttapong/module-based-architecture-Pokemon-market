@@ -1,4 +1,4 @@
-import { IPrice } from "../services/pokemon-card-services/pokemonCardServices";
+import { IPrice } from "../services/pokemon-cards/pokemonCardServices";
 
 const HackPriceConfig = {
     outOfStockChance: 0.2,

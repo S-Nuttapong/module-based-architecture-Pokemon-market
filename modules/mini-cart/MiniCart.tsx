@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import React, { FC } from "react";
 import { ShoppingBagIcon } from "../../public/icons/ShoppingBagIcon";
-import { usePokemonCartStore } from "../../stores/cart";
+import { usePokemonCartStore } from "../../stores/pokemon-cart";
 import { MiniCartTotal } from "./MiniCartTotal";
 import { MiniCartLineItems } from "./MiniCartLineItems";
 import { useItemQuantityCounter } from "./useItemsQuantityCounter";

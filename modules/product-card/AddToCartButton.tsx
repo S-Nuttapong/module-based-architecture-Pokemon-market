@@ -1,7 +1,7 @@
 import { Button } from "@chakra-ui/react";
 import { useState } from "react";
-import { IPokemonCard } from "../../services/pokemon-card-services/pokemonCardServices";
-import { usePokemonCartStore } from "../../stores/cart";
+import { IPokemonCard } from "../../services/pokemon-cards/pokemonCardServices";
+import { usePokemonCartStore } from "../../stores/pokemon-cart";
 
 /**
  * @todo: extract add to cart hook, should there be use cases elsewhere

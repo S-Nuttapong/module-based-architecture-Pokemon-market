@@ -1,7 +1,7 @@
 import { Button } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useDebounce } from "../../../hooks/useDebounce";
-import { usePokemonCartStore } from "../../../stores/cart";
+import { usePokemonCartStore } from "../../../stores/pokemon-cart";
 import { miniCartChildFactory } from "../miniCartChildFactory";
 import {
   useItemQuantity,
