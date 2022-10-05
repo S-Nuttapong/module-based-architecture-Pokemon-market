@@ -15,7 +15,12 @@ interface IPagination extends IPaginationRange {
   onPageChange?: (pageNumber: number) => void;
 }
 
-export const Pagination = (props: IPagination) => {
+/**
+ * specialized pagination for cards page
+ * @todo: extract and make it more general, should it gets used other pages
+ * @returns
+ */
+export const CardsPagination = (props: IPagination) => {
   const { onPageChange = noop, currentPage } = props;
 
   const paginationRange = usePaginationRange(props);
