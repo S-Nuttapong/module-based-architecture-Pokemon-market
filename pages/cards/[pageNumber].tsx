@@ -32,6 +32,21 @@ const POKEMON_MARKET_CARDS_META = {
     "Number one platform for trading Pokemon cards, we offer zero commission-fee, come trade your Pokemon cards, and get rich today !",
 };
 
+export async function getStaticPaths() {
+  const getPageLists = (firstPagesToRender = 20) => {
+    const dummy = null;
+    return Array(firstPagesToRender)
+      .fill(dummy)
+      .map((_, index) => `${index + 1}`);
+  };
+
+  const paths = getPageLists().map((pageNumber) => ({
+    params: { pageNumber: `deck-${pageNumber}` },
+  }));
+
+  return { paths, fallback: "blocking" } as const;
+}
+
 export const getStaticProps = async ({
   params,
 }: InferGetStaticPaths<typeof getStaticPaths>) => {
@@ -56,21 +71,6 @@ export const getStaticProps = async ({
     },
   };
 };
-
-export async function getStaticPaths() {
-  const getPageLists = (firstPagesToRender = 20) => {
-    const dummy = null;
-    return Array(firstPagesToRender)
-      .fill(dummy)
-      .map((_, index) => `${index + 1}`);
-  };
-
-  const paths = getPageLists().map((pageNumber) => ({
-    params: { pageNumber: `deck-${pageNumber}` },
-  }));
-
-  return { paths, fallback: "blocking" } as const;
-}
 
 const DesktopSearch = (props: ISearch) => (
   <Search w="fit-content" {...props} display={["none", "none", "flex"]} />
