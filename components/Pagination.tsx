@@ -20,9 +20,9 @@ export const Pagination = (props: IPagination) => {
 
   const paginationRange = usePaginationRange(props);
 
-  if (currentPage === 0 || paginationRange.length < 2) {
-    return null;
-  }
+  // if (currentPage === 0 || paginationRange.length < 2) {
+  //   return null;
+  // }
 
   const onNext = () => {
     onPageChange(currentPage + 1);
@@ -38,7 +38,7 @@ export const Pagination = (props: IPagination) => {
 
   return (
     <HStack w="full" justifyContent="center" color="content.primary">
-      <Link passHref href={`./page-${Number(currentPage) - 1}`}>
+      <Link passHref href={`./${Number(currentPage) - 1}`}>
         <IconButton
           borderRadius="8px"
           bg="button.primary"
@@ -58,9 +58,8 @@ export const Pagination = (props: IPagination) => {
       {paginationRange.map((pageNumber) => {
         if (pageNumber === DOTS) return <Text>{pageNumber}</Text>;
         return (
-          <Link key={pageNumber} passHref href={`./deck-${pageNumber}`}>
+          <Link key={pageNumber} passHref href={`./${pageNumber}`}>
             <Button
-              key={pageNumber}
               borderRadius="8px"
               bgColor={pageNumber === currentPage ? "button.focus" : "initial"}
               _hover={{
@@ -77,7 +76,7 @@ export const Pagination = (props: IPagination) => {
         );
       })}
 
-      <Link passHref href={`./page-${Number(currentPage) + 1}`}>
+      <Link passHref href={`./${Number(currentPage) + 1}`}>
         <IconButton
           borderRadius="8px"
           bg="button.primary"

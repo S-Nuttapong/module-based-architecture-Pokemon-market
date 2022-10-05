@@ -13,7 +13,7 @@ export const ProductCardGrid = ({ pokemonList = [] }: IPokemonCardList) => (
     rowGap="26px"
   >
     {pokemonList.map((pokemon) => (
-      <GridItem key={pokemon.name} color="content.primary">
+      <GridItem key={pokemon.id} color="content.primary">
         <ProductCard {...pokemon} />
       </GridItem>
     ))}

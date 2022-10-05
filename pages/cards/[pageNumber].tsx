@@ -41,7 +41,7 @@ export async function getStaticPaths() {
   };
 
   const paths = getPageLists().map((pageNumber) => ({
-    params: { pageNumber: `deck-${pageNumber}` },
+    params: { pageNumber },
   }));
 
   return { paths, fallback: "blocking" } as const;
@@ -50,7 +50,7 @@ export async function getStaticPaths() {
 export const getStaticProps = async ({
   params,
 }: InferGetStaticPaths<typeof getStaticPaths>) => {
-  const currentPage = Number(params.pageNumber.split("-")[1]);
+  const currentPage = Number(params.pageNumber);
   const hackPricePopulator = new HackPricePoputator();
 
   const pokemonList = hackPricePopulator.populateAndTrackPrice(
