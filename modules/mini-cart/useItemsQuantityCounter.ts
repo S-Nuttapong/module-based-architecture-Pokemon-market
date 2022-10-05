@@ -2,7 +2,7 @@ import isUndefined from 'lodash/isUndefined'
 import create from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 import { devtools } from 'zustand/middleware'
-import { CartItemID } from "../../services/pokemon-cart/pokemonCartServicesFactory"
+import { CartItemID } from "../../services/pokemon-cart/"
 import { usePokemonCartStore } from '../../stores/pokemon-cart'
 
 type QuantityEventHandler = (payload: { id: string, quantity: number }) => void

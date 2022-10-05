@@ -1,6 +1,8 @@
 import { safeParseJSON } from "../../utils/safeParseJSON"
-import { cartServicesFactory, IPokemonCart } from "./pokemonCartServicesFactory"
 import { nanoid } from 'nanoid'
+import { IPokemonCartServices } from "../../@types/pokemonCart"
+import { IPokemonCart } from "./CartItemID"
+
 
 type CartFields = keyof IPokemonCart
 
@@ -10,17 +12,17 @@ type CartFields = keyof IPokemonCart
  * @note Although, storage is synchronous, we have to cast async function to adhere to the interface, this will come in handy when changing to async storage like locale forage
  * @caveat This only works on client side, do not use on server side ! 
  */
-export const storageBasedCartServices = (storage: Storage) => {
+export const storageBasedCartServices = (storage: Storage): IPokemonCartServices => {
     const getItem = <TField extends CartFields>(key: TField, fallback?: IPokemonCart[TField]) => safeParseJSON<IPokemonCart[TField]>(storage.getItem(key), fallback)
     const setItem = <TField extends CartFields>(key: TField, value: IPokemonCart[TField]) => storage.setItem(key, JSON.stringify(value))
-    return cartServicesFactory({
+    return {
         addToCart: async (item) => {
             const id = nanoid()
             const cartItemById = getItem('cartItemById', {})
             const cartItemIds = getItem('cartItemIds', [])
             const total = getItem('total', 0)
 
-            const itemPrice = item.price ?? 0
+            const itemPrice = item.cardmarket.prices.averageSellPrice
             const newCartItem = { id, item, quantity: 1, itemTotal: itemPrice }
             const newTotal = total + itemPrice
             const newCartItemById = { ...cartItemById, [id]: newCartItem }
@@ -38,7 +40,7 @@ export const storageBasedCartServices = (storage: Storage) => {
 
             const cartItem = cartItemById[id]
             const quantityChange = quantity - cartItem.quantity
-            const itemPrice = cartItem?.item?.price ?? 0
+            const itemPrice = cartItem.item.cardmarket.prices.averageSellPrice
             const itemTotalChange = itemPrice * quantityChange
             const newItemTotal = cartItem.itemTotal + itemTotalChange
             const newTotal = total + itemTotalChange
@@ -61,5 +63,5 @@ export const storageBasedCartServices = (storage: Storage) => {
                 currency: 'USD'
             }
         }
-    })
+    }
 }

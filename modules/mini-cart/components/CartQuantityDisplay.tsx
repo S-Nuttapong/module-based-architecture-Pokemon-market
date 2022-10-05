@@ -3,7 +3,7 @@ import React from "react";
 import { miniCartChildFactory } from "../miniCartChildFactory";
 import { useItemQuantity } from "../useItemsQuantityCounter";
 
-export const QuantityDisplay = miniCartChildFactory(({ id }) => {
+export const CartQuantityDisplay = miniCartChildFactory(({ id }) => {
   const quantity = useItemQuantity(id);
   return (
     <Flex

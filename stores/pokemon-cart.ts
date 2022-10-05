@@ -1,12 +1,12 @@
 import create from 'zustand'
-import { ICartServices, IPokemonCart, QuantityChangePayload } from '../services/pokemon-cart/pokemonCartServicesFactory'
-
 import { immer } from 'zustand/middleware/immer'
 import { noop } from '../utils/common'
 import { devtools } from 'zustand/middleware'
 import { WithError } from '../@types/type-utils/error'
-import { IPokemonCard } from '../services/pokemon-cards/pokemonCardServices'
+import { IPokemonCard } from "../@types/pokemonCard"
 import { storageBasedCartServices } from '../services/pokemon-cart/storageBasedPokemonCartServices'
+import { IPokemonCartServices, QuantityChangePayload } from '../@types/pokemonCart'
+import { IPokemonCart } from "../services/pokemon-cart/CartItemID"
 
 
 type EventResultHandlers = { onFail?: (currentState: WithError<IPokemonCart>) => void, onSuccess?: (currentState: IPokemonCart) => void }
@@ -26,7 +26,7 @@ export interface ICartState extends IPokemonCart {
  * @param services cart service this, serve purpose for testing, and porting different services, as long as it adhere to ICartServices 
  * @returns hook function that contain state and actions of cart
  */
-export const pokemonCartStoreFactory = (services: ICartServices) => create<ICartState>()(immer(devtools((set, get) => ({
+export const pokemonCartStoreFactory = (services: IPokemonCartServices) => create<ICartState>()(immer(devtools((set, get) => ({
     total: 0,
     isLoading: false,
     currency: 'USD',
@@ -58,8 +58,6 @@ export const pokemonCartStoreFactory = (services: ICartServices) => create<ICart
         try {
             set({ isLoading: true })
             const { total, item } = await services.updateItemQuantity({ id, quantity })
-
-            console.debug({ total, item })
 
             set((state) => {
                 state.cartItemById[item.id] = item

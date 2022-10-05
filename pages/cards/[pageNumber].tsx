@@ -22,10 +22,11 @@ import {
 import { usePokemonCartStore } from "../../stores/pokemon-cart";
 import { isNonEmptyArray } from "../../utils/common";
 import { pokemonCardServices } from "../../services/pokemon-cards/pokemonCardServices";
-import { HackPricePoputator } from "../../utils/HackPricePopulator";
+
 import { ProductCardGrid } from "../../modules/product-card/ProductCardGrid";
 import { SEOMeta } from "../../components/SEOMeta";
 import { LinkBasedPagination } from "../../modules/LinkBasedPagination";
+import { HackOutOfStockPoputator } from "../../utils/HackOutOfStockPopulator";
 
 const POKEMON_MARKET_CARDS_META = {
   pageSize: 20,
@@ -54,9 +55,9 @@ export const getStaticProps = async ({
   params,
 }: InferGetStaticPaths<typeof getStaticPaths>) => {
   const currentPage = Number(params.pageNumber);
-  const hackPricePopulator = new HackPricePoputator();
+  const hackOutOfStockPopulator = new HackOutOfStockPoputator();
 
-  const pokemonList = hackPricePopulator.populateAndTrackPrice(
+  const pokemonList = hackOutOfStockPopulator.populateAndTrackPrice(
     await pokemonCardServices.getAll({
       page: currentPage || 1,
       pageSize: POKEMON_MARKET_CARDS_META.pageSize,
@@ -69,7 +70,7 @@ export const getStaticProps = async ({
       meta: {
         currentPage,
         ...POKEMON_MARKET_CARDS_META,
-        hackPriceRecords: hackPricePopulator.getRecord(),
+        hackPriceRecords: hackOutOfStockPopulator.getRecord(),
       },
     },
   };
@@ -89,13 +90,15 @@ export default function PokemonCardsMarketPage(
   const { pokemonList: pagePokemonList, meta } = props;
   const initializeCart = usePokemonCartStore((state) => state.initializeCart);
   const [data, searchFilter] = useSearchFilter();
-  const hackPricePopulator = new HackPricePoputator(meta.hackPriceRecords);
+  const hackOutOfStockPopulator = new HackOutOfStockPoputator(
+    meta.hackPriceRecords
+  );
 
   const searchResult = data.results;
 
   const searchedPokemonList = useMemo(() => {
     if (searchResult?.status === SearchStatus.Found) {
-      return hackPricePopulator.poplulatePrice(searchResult.data);
+      return hackOutOfStockPopulator.poplulatePrice(searchResult.data);
     }
     return [];
   }, [searchResult]);

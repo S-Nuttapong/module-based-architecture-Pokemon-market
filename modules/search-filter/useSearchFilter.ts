@@ -3,7 +3,7 @@ import { useApi } from "../../hooks/useApi";
 import merge from "lodash/merge";
 import { isFalsy, isNonEmptyArray } from "../../utils/common";
 import { pokemonCardServices } from "../../services/pokemon-cards/pokemonCardServices";
-import { Card } from "pokemon-tcg-sdk-typescript/dist/sdk";
+import { IPokemonCard } from "../../@types/pokemonCard";
 
 const makeSearchQuery = (searchTerms: typeof INITIAL_SEARCH_TERMS) => {
   const { name, set, rarity, type } = searchTerms;
@@ -36,7 +36,7 @@ export enum SearchStatus {
 
 type SearchResults = {
   status: SearchStatus.Cleared
-} | { status: SearchStatus.NotFound, data: [] } | { status: SearchStatus.Found, data: Card[] }
+} | { status: SearchStatus.NotFound, data: [] } | { status: SearchStatus.Found, data: IPokemonCard[] }
 
 export const useSearchFilter = (configs?: typeof DEFAULT_CONFIGS) => {
   const [searchTerms, setSearchTerm] = useState(INITIAL_SEARCH_TERMS);

@@ -1,7 +1,7 @@
 import { Flex, Text, Stack, HStack, Box } from "@chakra-ui/react";
 import Image from "next/image";
 import { usePriceFormatter } from "../../hooks/usePriceFormatter";
-import { IPokemonCard } from "../../services/pokemon-cards/pokemonCardServices";
+import { IPokemonCard } from "../../@types/pokemonCard";
 import { AddToCartButton } from "./AddToCartButton";
 
 export const ProductCard = (props: IPokemonCard) => {
@@ -54,7 +54,9 @@ export const ProductCard = (props: IPokemonCard) => {
             }
             minW="max-content"
           >
-            <Text fontSize="12px">{formatPrice(props.price)}</Text>
+            <Text fontSize="12px">
+              {formatPrice(props.cardmarket.prices.averageSellPrice)}
+            </Text>
             {props.isOutOfStock && <Text fontSize="12px">Out of stock</Text>}
           </HStack>
           <AddToCartButton {...props} />

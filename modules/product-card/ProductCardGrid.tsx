@@ -1,6 +1,6 @@
 import { Grid, GridItem } from "@chakra-ui/react";
 import React from "react";
-import { IPokemonCard } from "../../services/pokemon-cards/pokemonCardServices";
+import { IPokemonCard } from "../../@types/pokemonCard";
 import { ProductCard } from "./ProductCard";
 
 interface IPokemonCardList {

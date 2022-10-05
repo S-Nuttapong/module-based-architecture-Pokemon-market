@@ -9,15 +9,16 @@ import { useMemo } from "react";
 import React from "react";
 import { createColumnHelper } from "@tanstack/react-table";
 import isEmpty from "lodash/isEmpty";
-import { IncreaseQuantityButton } from "./components/IncreaseQuantityButton";
-import { TotalItemPrice } from "./components/TotalItemPrice";
-import { ItemDetail } from "./components/ItemDetail";
-import { QuantityDisplay } from "./components/QuantityDisplay";
+import { IncreaseQuantityButton } from "./components/IncreaseCartQuantityButton";
+import { TotalItemPrice } from "./components/TotalCartItemPrice";
+
 import { CartItemImage } from "./components/CartItemImage";
-import { DecreaseQuantityButton } from "./components/DecreaseQuantityButton";
+import { DecreaseQuantityButton } from "./components/DecreaseCartQuantityButton";
 import { DataTable } from "../../components/DataTable";
 import { usePokemonCartStore } from "../../stores/pokemon-cart";
 import { miniCartChildFactory } from "./miniCartChildFactory";
+import { CartItemDetail } from "./components/CartItemDetail";
+import { CartQuantityDisplay } from "./components/CartQuantityDisplay";
 
 const ItemColumn = miniCartChildFactory(({ id }) => {
   return (
@@ -29,8 +30,8 @@ const ItemColumn = miniCartChildFactory(({ id }) => {
 });
 const QuantityColumn = miniCartChildFactory(({ id }) => (
   <Flex height="100%" flexDir="column" justifyContent="space-between">
-    <ItemDetail id={id} />
-    <QuantityDisplay id={id} />
+    <CartItemDetail id={id} />
+    <CartQuantityDisplay id={id} />
   </Flex>
 ));
 const PriceColumn = miniCartChildFactory(({ id }) => (

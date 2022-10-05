@@ -1,6 +1,6 @@
 import { Button } from "@chakra-ui/react";
 import { useState } from "react";
-import { IPokemonCard } from "../../services/pokemon-cards/pokemonCardServices";
+import { IPokemonCard } from "../../@types/pokemonCard";
 import { usePokemonCartStore } from "../../stores/pokemon-cart";
 
 /**
