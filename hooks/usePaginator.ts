@@ -33,6 +33,11 @@ const getTotalPages = (props: IPagination): number => {
     return Math.ceil(totalPagesItemsSize / pageSize);
 }
 
+/**
+ * @todo add next page, previous page data and handler
+ * @param props you give totalPagesItemSize and let the hook determine the total pages for you, or manually define it by giving totalPages
+ * @returns pageRanges, the list that contains page count and divider  
+ */
 export const usePaginator = (props: IPagination) => {
     const {
         pageSize,
