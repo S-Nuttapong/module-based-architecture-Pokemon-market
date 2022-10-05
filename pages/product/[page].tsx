@@ -9,10 +9,8 @@ import {
   Text,
 } from "@chakra-ui/react";
 
-import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { PokemonQueryParameters, IPokemonCard } from "../../@types/pokemonAPIs";
 import { InferGetStaticPaths } from "../../@types/type-utils/next-helpers";
 import { Pagination } from "../../components/Pagination";
 import { MiniCart } from "../../modules/mini-cart/MiniCart";
@@ -22,17 +20,7 @@ import { ISearch, Search } from "../../modules/search-filter/Search";
 import { useSearchFilter } from "../../modules/search-filter/useSearchFilter";
 import { usePokemonCartStore } from "../../stores/cart";
 import { isNonEmptyArray } from "../../utils/common";
-
-const pokemonService = {
-  getAll: async (params?: PokemonQueryParameters) => {
-    const { data: results } = await axios({
-      url: "https://api.pokemontcg.io/v2/cards",
-      method: "get",
-      params,
-    });
-    return results.data as IPokemonCard[];
-  },
-};
+import { pokemonService } from "../../services/product-card-service/pokemonService";
 
 const POKEMON_MARKET_META = {
   pageSize: 20,
@@ -60,11 +48,11 @@ export async function getStaticPaths() {
     const dummy = null;
     return Array(firstPagesToRender)
       .fill(dummy)
-      .map((_, index) => index + 1);
+      .map((_, index) => `${index + 1}`);
   };
 
   const paths = getPageLists().map((page) => ({
-    params: { page: page === 1 ? "/" : `${page}` },
+    params: { page },
   }));
 
   return { paths, fallback: "blocking" } as const;
@@ -84,7 +72,6 @@ export default function Home(
   const { pokemonList, meta } = props;
   const initializeCart = usePokemonCartStore((state) => state.initializeCart);
   const [data, searchFilter] = useSearchFilter();
-  const { prefetch } = useRouter();
 
   useEffect(() => {
     initializeCart();
