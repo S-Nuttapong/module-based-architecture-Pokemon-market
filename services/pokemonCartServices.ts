@@ -25,7 +25,7 @@ export type CartFields = keyof IPokemonCart
  * @note Although, storage is synchronous, we have to cast async function to adhere to the interface, this will come in handy when changing to async storage like locale forage
  * @caveat This only works on client side, do not use on server side ! 
  */
-export const PokemonCartServices = (storage: Storage): IPokemonCartServices => {
+export const pokemonCartServices = (storage: Storage): IPokemonCartServices => {
     const getItem = <TField extends CartFields>(key: TField, fallback?: IPokemonCart[TField]) => safeParseJSON<IPokemonCart[TField]>(storage.getItem(key), fallback)
     const setItem = <TField extends CartFields>(key: TField, value: IPokemonCart[TField]) => storage.setItem(key, JSON.stringify(value))
     return {

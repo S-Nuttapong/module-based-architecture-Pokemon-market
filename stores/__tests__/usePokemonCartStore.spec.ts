@@ -116,7 +116,7 @@ const mock = {
     "itemTotal": 2.29
 }
 
-const stubPokemonCartServices: IPokemonCartServices = {
+const stubpokemonCartServices: IPokemonCartServices = {
     'addToCart': async (item) => ({
         'cartItemById': {},
         'cartItemIds': [],

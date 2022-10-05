@@ -4,7 +4,7 @@ import { noop } from '../utils/common'
 import { devtools } from 'zustand/middleware'
 import { WithError } from '../@types/type-utils/error'
 import { IPokemonCard } from "../@types/pokemonCard"
-import { IPokemonCartServices, QuantityChangePayload, PokemonCartServices } from '../services/pokemonCartServices'
+import { IPokemonCartServices, QuantityChangePayload, pokemonCartServices } from '../services/pokemonCartServices'
 import { IPokemonCart } from '../@types/pokemonCart'
 
 
@@ -92,4 +92,4 @@ export const pokemonCartStoreFactory = (services: IPokemonCartServices) => creat
  * @note: undefined window implies the ssr, also it can't be extracted as variable here, to make it work we must inline like so 
  * @todo: port the real BE services once ready
  */
-export const usePokemonCartStore = pokemonCartStoreFactory(PokemonCartServices(typeof window === 'undefined' ? {} as Storage : localStorage))
+export const usePokemonCartStore = pokemonCartStoreFactory(pokemonCartServices(typeof window === 'undefined' ? {} as Storage : localStorage))
