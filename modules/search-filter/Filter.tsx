@@ -34,7 +34,6 @@ const styles: SelectProps = {
   borderWidth: "1px",
   borderColor: "border.primary",
   flexGrow: 1,
-  flexBasis: "calc(( 25rem - 100%) * 999)",
 };
 
 const SetFilter = ({ onFilter, isLoading }: IPokemonFilter) => {
@@ -57,6 +56,7 @@ const SetFilter = ({ onFilter, isLoading }: IPokemonFilter) => {
     <OptionSelect
       {...styles}
       flexGrow={1}
+      minW="120px"
       placeholder="Set"
       isDisabled={data.isLoading || isLoading}
       options={setOptions}
@@ -66,7 +66,7 @@ const SetFilter = ({ onFilter, isLoading }: IPokemonFilter) => {
 };
 
 export const PokemonFilter = ({ onFilter, isLoading }: IPokemonFilter) => (
-  <Flex gap="16px" wrap="wrap">
+  <Flex gap="16px" wrap="wrap" w={["ful", "full", "unset", "unset"]}>
     <SetFilter onFilter={onFilter} isLoading={isLoading} />
     <OptionSelect
       {...styles}

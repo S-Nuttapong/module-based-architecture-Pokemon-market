@@ -1,8 +1,7 @@
-import React from 'react';
 import { useMemo } from 'react';
 
 export interface IPaginationRange {
-    totalCount: number,
+    totalPages: number,
     pageSize: number,
     currentPage: number
     siblingCount?: number,
@@ -18,30 +17,28 @@ export const DOTS = '...';
 
 export const usePaginationRange = (props: IPaginationRange) => {
     const {
-        totalCount,
+        totalPages,
         pageSize,
         siblingCount = 1,
         currentPage
     } = props
 
     const paginationRange = useMemo(() => {
-        const totalPageCount = Math.ceil(totalCount / pageSize);
-
         // Pages count is determined as siblingCount + firstPage + lastPage + currentPage + 2*DOTS
         const totalPageNumbers = siblingCount + 5;
 
         /*
           If the number of pages is less than the page numbers we want to show in our
-          paginationComponent, we return the range [1..totalPageCount]
+          paginationComponent, we return the range [1..totalPages]
         */
-        if (totalPageNumbers >= totalPageCount) {
-            return range(1, totalPageCount);
+        if (totalPageNumbers >= totalPages) {
+            return range(1, totalPages);
         }
 
         const leftSiblingIndex = Math.max(currentPage - siblingCount, 1);
         const rightSiblingIndex = Math.min(
             currentPage + siblingCount,
-            totalPageCount
+            totalPages
         );
 
         /*
@@ -50,23 +47,23 @@ export const usePaginationRange = (props: IPaginationRange) => {
           component size which we do not want
         */
         const shouldShowLeftDots = leftSiblingIndex > 2;
-        const shouldShowRightDots = rightSiblingIndex < totalPageCount - 2;
+        const shouldShowRightDots = rightSiblingIndex < totalPages - 2;
 
         const firstPageIndex = 1;
-        const lastPageIndex = totalPageCount;
+        const lastPageIndex = totalPages;
 
         if (!shouldShowLeftDots && shouldShowRightDots) {
             const leftItemCount = 3 + 2 * siblingCount;
             const leftRange = range(1, leftItemCount);
 
-            return [...leftRange, DOTS, totalPageCount];
+            return [...leftRange, DOTS, totalPages];
         }
 
         if (shouldShowLeftDots && !shouldShowRightDots) {
             const rightItemCount = 3 + 2 * siblingCount;
             const rightRange = range(
-                totalPageCount - rightItemCount + 1,
-                totalPageCount
+                totalPages - rightItemCount + 1,
+                totalPages
             );
             return [firstPageIndex, DOTS, ...rightRange];
         }
@@ -77,7 +74,7 @@ export const usePaginationRange = (props: IPaginationRange) => {
         }
 
         return []
-    }, [totalCount, pageSize, siblingCount, currentPage]);
+    }, [totalPages, pageSize, siblingCount, currentPage]);
 
     return paginationRange;
 };

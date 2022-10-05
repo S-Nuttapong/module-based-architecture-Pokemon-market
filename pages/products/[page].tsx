@@ -1,4 +1,5 @@
 import {
+  Box,
   Divider,
   Flex,
   Heading,
@@ -7,30 +8,20 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
+
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { IPokemonCard, PokemonQueryParameters } from "../@types/pokemonAPIs";
-
-import { useSearchFilter } from "../modules/search-filter/useSearchFilter";
-
-import { isNonEmptyArray, noop } from "../utils/common";
-import React from "react";
-import { usePokemonCartStore } from "../stores/cart";
-
-import { PokemonFilter } from "../modules/search-filter/Filter";
-import { MiniCart } from "../modules/mini-cart/MiniCart";
-import { PokemonCardGrid } from "../modules/product-card/ProductCardGrid";
-import { ISearch, Search } from "../modules/search-filter/Search";
-import {
-  Container,
-  usePaginator,
-  Paginator,
-  Previous,
-  PageGroup,
-  Next,
-} from "chakra-paginator";
-import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
-import { Pagination } from "../components/Pagination";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { PokemonQueryParameters, IPokemonCard } from "../../@types/pokemonAPIs";
+import { InferGetStaticPaths } from "../../@types/type-utils/next-helpers";
+import { Pagination } from "../../components/Pagination";
+import { MiniCart } from "../../modules/mini-cart/MiniCart";
+import { PokemonCardGrid } from "../../modules/product-card/ProductCardGrid";
+import { PokemonFilter } from "../../modules/search-filter/Filter";
+import { ISearch, Search } from "../../modules/search-filter/Search";
+import { useSearchFilter } from "../../modules/search-filter/useSearchFilter";
+import { usePokemonCartStore } from "../../stores/cart";
+import { isNonEmptyArray } from "../../utils/common";
 
 const pokemonService = {
   getAll: async (params?: PokemonQueryParameters) => {
@@ -43,6 +34,42 @@ const pokemonService = {
   },
 };
 
+const POKEMON_MARKET_META = {
+  pageSize: 20,
+  totalPages: 125,
+};
+
+export const getStaticProps = async ({
+  params,
+}: InferGetStaticPaths<typeof getStaticPaths>) => {
+  const currentPage = Number(params.page);
+  const pokemonList = await pokemonService.getAll({
+    page: currentPage || 1,
+    ...POKEMON_MARKET_META,
+  });
+  return {
+    props: {
+      pokemonList,
+      meta: { currentPage, ...POKEMON_MARKET_META },
+    },
+  };
+};
+
+export async function getStaticPaths() {
+  const getPageLists = (firstPagesToRender = 20) => {
+    const dummy = null;
+    return Array(firstPagesToRender)
+      .fill(dummy)
+      .map((_, index) => index + 1);
+  };
+
+  const paths = getPageLists().map((page) => ({
+    params: { page: page === 1 ? "/" : `${page}` },
+  }));
+
+  return { paths, fallback: "blocking" } as const;
+}
+
 const DesktopSearch = (props: ISearch) => (
   <Search w="fit-content" {...props} display={["none", "none", "flex"]} />
 );
@@ -51,36 +78,33 @@ const MobileSearch = (props: ISearch) => (
   <Search w="100%" {...props} display={["flex", "flex", "none"]} />
 );
 
-const Home = () => {
-  const [pokemonList, setPokemon] = useState([] as IPokemonCard[]);
+export default function Home(
+  props: Awaited<ReturnType<typeof getStaticProps>>["props"]
+) {
+  const { pokemonList, meta } = props;
   const initializeCart = usePokemonCartStore((state) => state.initializeCart);
-  const fetchPokemonList = async () => {
-    const params: PokemonQueryParameters = { page: 1, pageSize: 20 };
-    try {
-      const cards = await pokemonService.getAll(params);
-      setPokemon(cards);
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  const [data, searchFilter] = useSearchFilter();
+  const { prefetch } = useRouter();
 
   useEffect(() => {
-    fetchPokemonList();
     initializeCart();
   }, []);
-
-  const [data, searchFilter] = useSearchFilter();
 
   return (
     <Flex
       bg="bg.primary"
       minH="100vh"
       w="100vw"
-      justifyContent="center"
+      justifyContent="space-between"
       flexDir="column"
       px={[0, "30px", "60px", "120px"]}
     >
-      <Stack w="100%" padding={["20px", "20px", "30px", "30px"]} spacing="24px">
+      <Stack
+        w="full"
+        h="full"
+        padding={["20px", "20px", "30px", "30px"]}
+        spacing="24px"
+      >
         <HStack w="100%" justifyContent="space-between">
           <Heading
             color="content.primary"
@@ -122,16 +146,15 @@ const Home = () => {
             }
           />
         )}
-
-        <Pagination
-          totalCount={2500}
-          onPageChange={noop}
-          currentPage={1}
-          pageSize={20}
-        />
       </Stack>
+
+      <Box mb="30px">
+        <Pagination
+          totalPages={meta.totalPages}
+          currentPage={meta.currentPage}
+          pageSize={meta.pageSize}
+        />
+      </Box>
     </Flex>
   );
-};
-
-export default Home;
+}

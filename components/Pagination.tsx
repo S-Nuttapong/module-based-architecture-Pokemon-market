@@ -1,7 +1,9 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
-import { IconButton, Button, ListItem, HStack } from "@chakra-ui/react";
+import { IconButton, Button, Text, HStack } from "@chakra-ui/react";
+import { noop } from "lodash";
 import first from "lodash/first";
 import last from "lodash/last";
+import Link from "next/link";
 import React from "react";
 import {
   usePaginationRange,
@@ -10,11 +12,11 @@ import {
 } from "../hooks/usePagination";
 
 interface IPagination extends IPaginationRange {
-  onPageChange: (nextPage: number) => void;
+  onPageChange?: (pageNumber: number) => void;
 }
 
 export const Pagination = (props: IPagination) => {
-  const { onPageChange, currentPage } = props;
+  const { onPageChange = noop, currentPage } = props;
 
   const paginationRange = usePaginationRange(props);
 
@@ -36,55 +38,61 @@ export const Pagination = (props: IPagination) => {
 
   return (
     <HStack w="full" justifyContent="center" color="content.primary">
-      <IconButton
-        borderRadius="8px"
-        bg="button.primary"
-        aria-label="Previous"
-        _hover={{
-          bg: "button.hover",
-        }}
-        _focus={{
-          bg: "button.focus",
-        }}
-        onClick={onPrevious}
-        isDisabled={firstPage === currentPage}
-        icon={<ChevronLeftIcon onClick={onPrevious} boxSize="1.25em" />}
-      />
+      <Link passHref href={`./${Number(currentPage) - 1}`}>
+        <IconButton
+          borderRadius="8px"
+          bg="button.primary"
+          aria-label="Previous"
+          _hover={{
+            bg: "button.hover",
+          }}
+          _focus={{
+            bg: "button.focus",
+          }}
+          onClick={onPrevious}
+          isDisabled={firstPage === currentPage}
+          icon={<ChevronLeftIcon onClick={onPrevious} boxSize="1.25em" />}
+        />
+      </Link>
 
       {paginationRange.map((pageNumber) => {
-        pageNumber === DOTS && <ListItem>.</ListItem>;
+        if (pageNumber === DOTS) return <Text>{pageNumber}</Text>;
         return (
-          <Button
-            key={pageNumber}
-            borderRadius="8px"
-            bgColor={pageNumber === currentPage ? "button.focus" : "initial"}
-            _hover={{
-              bg: "button.hover",
-            }}
-            _active={{
-              bg: "button.focus",
-            }}
-            onClick={() => onPageChange(Number(pageNumber))}
-          >
-            {pageNumber}
-          </Button>
+          <Link key={pageNumber} passHref href={`./${pageNumber}`}>
+            <Button
+              key={pageNumber}
+              borderRadius="8px"
+              bgColor={pageNumber === currentPage ? "button.focus" : "initial"}
+              _hover={{
+                bg: "button.hover",
+              }}
+              _active={{
+                bg: "button.focus",
+              }}
+              onClick={() => onPageChange(Number(pageNumber))}
+            >
+              {pageNumber}
+            </Button>
+          </Link>
         );
       })}
 
-      <IconButton
-        borderRadius="8px"
-        bg="button.primary"
-        aria-label="Previous"
-        _hover={{
-          bg: "button.hover",
-        }}
-        _focus={{
-          bg: "button.focus",
-        }}
-        isDisabled={lastPage === currentPage}
-        onClick={onNext}
-        icon={<ChevronRightIcon onClick={onPrevious} boxSize="1.25em" />}
-      />
+      <Link passHref href={`./${Number(currentPage) + 1}`}>
+        <IconButton
+          borderRadius="8px"
+          bg="button.primary"
+          aria-label="Previous"
+          _hover={{
+            bg: "button.hover",
+          }}
+          _focus={{
+            bg: "button.focus",
+          }}
+          isDisabled={lastPage === currentPage}
+          onClick={onNext}
+          icon={<ChevronRightIcon onClick={onPrevious} boxSize="1.25em" />}
+        />
+      </Link>
     </HStack>
   );
 };
