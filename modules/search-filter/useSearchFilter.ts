@@ -1,37 +1,63 @@
 import { useState } from "react";
 import { useApi } from "../../hooks/useApi";
 import merge from "lodash/merge";
-import { isFalsy } from "../../utils/common";
+import { isFalsy, isNonEmptyArray } from "../../utils/common";
 import { pokemonCardServices } from "../../services/pokemon-card-services/pokemonCardServices";
+import { Card } from "pokemon-tcg-sdk-typescript/dist/sdk";
 
-const findCardsDI = pokemonCardServices.findCardsByQueries
+const makeSearchQuery = (searchTerms: typeof INITIAL_SEARCH_TERMS) => {
+  const { name, set, rarity, type } = searchTerms;
+  const rarityQuery = rarity ? `!rarity:"${rarity}"` : "";
+  const typesQuery = type ? `types:${type}` : "";
+  const setQuery = set ? `set.id:${set}` : ""
+  const nameQuery = name ? `name:${name}*` : ""
+  const query = [nameQuery, setQuery, typesQuery, rarityQuery].join(' ').trim()
 
-//name search do wild card
-//types search do nothing
-//rarity do exact match
-export const useSearchFilter = (findCards = findCardsDI) => {
-  const [searchTerms, setSearchTerm] = useState({
-    set: "",
-    rarity: "",
-    type: "",
-    name: "",
-  });
+  return query
+}
 
-  const searchFilterHandler = async (terms: Partial<typeof searchTerms>) => {
+const DEFAULT_CONFIGS = {
+  makeSearchQuery: makeSearchQuery,
+  findCards: pokemonCardServices.findCardsByQueries
+}
+
+const INITIAL_SEARCH_TERMS = {
+  set: "",
+  rarity: "",
+  type: "",
+  name: "",
+}
+
+export enum SearchStatus {
+  Cleared,
+  Found,
+  NotFound
+}
+
+type SearchResults = {
+  status: SearchStatus.Cleared
+} | { status: SearchStatus.NotFound, data: [] } | { status: SearchStatus.Found, data: Card[] }
+
+export const useSearchFilter = (configs?: typeof DEFAULT_CONFIGS) => {
+  const [searchTerms, setSearchTerm] = useState(INITIAL_SEARCH_TERMS);
+  const { makeSearchQuery, findCards } = { ...configs, ...DEFAULT_CONFIGS }
+
+  const searchFilterHandler = async (terms: Partial<typeof searchTerms>): Promise<SearchResults> => {
     const newTerms = merge({}, searchTerms, terms);
     const { name, set, rarity, type } = newTerms;
     const areAllSearchTermsCleared = [name, set, rarity, type].every(isFalsy);
-    const rarityQuery = rarity ? `!rarity:"${rarity}"` : "";
-    const typesQuery = type ? `types:${type}` : "";
-    const setQuery = set ? `set.id:${set}` : ""
-    const nameQuery = name ? `name:${name}*` : ""
-    const query = [nameQuery, setQuery, typesQuery, rarityQuery].join(' ').trim()
 
     setSearchTerm(newTerms);
 
-    if (areAllSearchTermsCleared) return [];
+    if (areAllSearchTermsCleared) return { status: SearchStatus.Cleared };
 
-    return await findCards({ pageSize: 20, q: query });
+    const query = makeSearchQuery(newTerms)
+
+    const data = await findCards({ pageSize: 20, q: query });
+
+    if (isNonEmptyArray(data)) return { data, status: SearchStatus.Found }
+
+    return { status: SearchStatus.NotFound, data: [] }
   };
 
   return useApi(searchFilterHandler);
