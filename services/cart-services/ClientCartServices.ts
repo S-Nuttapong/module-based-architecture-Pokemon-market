@@ -39,9 +39,9 @@ export const clientCartServices = (storage: Storage) => {
             const cartItem = cartItemById[id]
             const quantityChange = quantity - cartItem.quantity
             const itemPrice = cartItem?.item?.price ?? 0
-            const newItemTotal = itemPrice * quantityChange
-            const newItemTotalChange = newItemTotal - cartItem.itemTotal
-            const newTotal = total + newItemTotalChange
+            const itemTotalChange = itemPrice * quantityChange
+            const newItemTotal = cartItem.itemTotal + itemTotalChange
+            const newTotal = total + itemTotalChange
             const updatedCartItem = { ...cartItem, quantity, itemTotal: newItemTotal }
 
             setItem('cartItemById', { ...cartItemById, [id]: updatedCartItem })

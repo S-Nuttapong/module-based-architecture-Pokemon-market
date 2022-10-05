@@ -22,23 +22,26 @@ import { isNonEmptyArray } from "../../utils/common";
 import { pokemonCardServices } from "../../services/pokemon-card-services/pokemonCardServices";
 import { HackPricePoputator } from "../../utils/HackPricePopulator";
 import { ProductCardGrid } from "../../modules/product-card/ProductCardGrid";
+import { SEOMeta } from "../../components/SEOMeta";
 
-const POKEMON_MARKET_META = {
+const POKEMON_MARKET_CARDS_META = {
   pageSize: 20,
   totalPages: 125,
+  title: `Pokemon Card Market`,
+  description:
+    "Number one platform for trading Pokemon cards, we offer zero commission-fee, come trade your Pokemon cards, and get rich today !",
 };
 
 export const getStaticProps = async ({
   params,
 }: InferGetStaticPaths<typeof getStaticPaths>) => {
-  const currentPage = Number(params.pageNumber);
-
+  const currentPage = Number(params.pageNumber.split("-")[1]);
   const hackPricePopulator = new HackPricePoputator();
 
   const pokemonList = hackPricePopulator.populateAndTrackPrice(
     await pokemonCardServices.getAll({
       page: currentPage || 1,
-      ...POKEMON_MARKET_META,
+      pageSize: POKEMON_MARKET_CARDS_META.pageSize,
     })
   );
 
@@ -47,7 +50,7 @@ export const getStaticProps = async ({
       pokemonList,
       meta: {
         currentPage,
-        ...POKEMON_MARKET_META,
+        ...POKEMON_MARKET_CARDS_META,
         hackPriceRecords: hackPricePopulator.getRecord(),
       },
     },
@@ -63,7 +66,7 @@ export async function getStaticPaths() {
   };
 
   const paths = getPageLists().map((pageNumber) => ({
-    params: { pageNumber },
+    params: { pageNumber: `deck-${pageNumber}` },
   }));
 
   return { paths, fallback: "blocking" } as const;
@@ -99,66 +102,69 @@ export default function Home(
   }, []);
 
   return (
-    <Flex
-      bg="bg.primary"
-      minH="100vh"
-      w="100vw"
-      justifyContent="space-between"
-      flexDir="column"
-      px={[0, "30px", "60px", "120px"]}
-    >
-      <Stack
-        w="full"
-        h="full"
-        padding={["20px", "20px", "30px", "30px"]}
-        spacing="24px"
+    <>
+      <SEOMeta title={meta.title} description={meta.description} />
+      <Flex
+        bg="bg.primary"
+        minH="100vh"
+        w="100vw"
+        justifyContent="space-between"
+        flexDir="column"
+        px={[0, "30px", "60px", "120px"]}
       >
-        <HStack w="100%" justifyContent="space-between">
-          <Heading
-            color="content.primary"
-            minW="max-content"
-            fontSize="26px"
-            fontWeight="600"
-          >
-            Pokemon market
-          </Heading>
-          <HStack w="100%" justifyContent="flex-end" alignItems="baseline">
-            <DesktopSearch onSearch={(name) => searchFilter({ name })} />
-            <MiniCart />
-          </HStack>
-        </HStack>
-
-        <MobileSearch onSearch={(name) => searchFilter({ name })} />
-
-        <Divider borderColor="border.primary" />
-
-        <Flex
-          w="100%"
-          justifyContent="space-between"
-          alignItems="center"
-          flexWrap="wrap"
-          gap="24px"
+        <Stack
+          w="full"
+          h="full"
+          padding={["20px", "20px", "30px", "30px"]}
+          spacing="24px"
         >
-          <Text color="content.primary" fontSize="18px" fontWeight="600">
-            Choose Card
-          </Text>
-          <PokemonFilter onFilter={(value) => searchFilter(value)} />
-        </Flex>
+          <HStack w="100%" justifyContent="space-between">
+            <Heading
+              color="content.primary"
+              minW="max-content"
+              fontSize="26px"
+              fontWeight="600"
+            >
+              Pokemon market
+            </Heading>
+            <HStack w="100%" justifyContent="flex-end" alignItems="baseline">
+              <DesktopSearch onSearch={(name) => searchFilter({ name })} />
+              <MiniCart />
+            </HStack>
+          </HStack>
 
-        {data.isLoading ? (
-          <Spinner />
-        ) : (
-          <ProductCardGrid pokemonList={pokemonList} />
-        )}
-      </Stack>
+          <MobileSearch onSearch={(name) => searchFilter({ name })} />
 
-      <Box mb="30px">
-        <Pagination
-          totalPages={meta.totalPages}
-          currentPage={meta.currentPage}
-          pageSize={meta.pageSize}
-        />
-      </Box>
-    </Flex>
+          <Divider borderColor="border.primary" />
+
+          <Flex
+            w="100%"
+            justifyContent="space-between"
+            alignItems="center"
+            flexWrap="wrap"
+            gap="24px"
+          >
+            <Text color="content.primary" fontSize="18px" fontWeight="600">
+              Choose Card
+            </Text>
+            <PokemonFilter onFilter={(value) => searchFilter(value)} />
+          </Flex>
+
+          {data.isLoading ? (
+            <Spinner />
+          ) : (
+            <ProductCardGrid pokemonList={pokemonList} />
+          )}
+        </Stack>
+
+        <Box mb="30px">
+          <Pagination
+            totalPages={meta.totalPages}
+            currentPage={meta.currentPage}
+            pageSize={meta.pageSize}
+          />
+        </Box>
+      </Flex>
+    </>
   );
 }

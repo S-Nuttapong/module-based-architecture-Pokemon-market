@@ -38,7 +38,7 @@ export const Pagination = (props: IPagination) => {
 
   return (
     <HStack w="full" justifyContent="center" color="content.primary">
-      <Link passHref href={`./${Number(currentPage) - 1}`}>
+      <Link passHref href={`./page-${Number(currentPage) - 1}`}>
         <IconButton
           borderRadius="8px"
           bg="button.primary"
@@ -58,7 +58,7 @@ export const Pagination = (props: IPagination) => {
       {paginationRange.map((pageNumber) => {
         if (pageNumber === DOTS) return <Text>{pageNumber}</Text>;
         return (
-          <Link key={pageNumber} passHref href={`./${pageNumber}`}>
+          <Link key={pageNumber} passHref href={`./deck-${pageNumber}`}>
             <Button
               key={pageNumber}
               borderRadius="8px"
@@ -77,7 +77,7 @@ export const Pagination = (props: IPagination) => {
         );
       })}
 
-      <Link passHref href={`./${Number(currentPage) + 1}`}>
+      <Link passHref href={`./page-${Number(currentPage) + 1}`}>
         <IconButton
           borderRadius="8px"
           bg="button.primary"

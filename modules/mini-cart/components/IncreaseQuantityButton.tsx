@@ -1,5 +1,5 @@
 import { Button } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDebounce } from "../../../hooks/useDebounce";
 import { usePokemonCartStore } from "../../../stores/cart";
 import { miniCartChildFactory } from "../miniCartChildFactory";
@@ -10,6 +10,7 @@ import {
 
 export const IncreaseQuantityButton = miniCartChildFactory(({ id }) => {
   const quantity = useItemQuantity(id);
+  const [isClick, setIsClick] = useState(false);
   const increase = useItemQuantityCounter((state) => state.increase);
   const syncActualQuantity = useItemQuantityCounter(
     (state) => state.syncActualQuantity
@@ -21,15 +22,19 @@ export const IncreaseQuantityButton = miniCartChildFactory(({ id }) => {
 
   const debouncedQuantity = useDebounce(quantity);
 
-  // useEffect(() => {
-  //   updateItemQuantity({
-  //     id,
-  //     quantity,
-  //     onFail: (state) => {
-  //       syncActualQuantity({ id, quantity: state.cartItemById[id].quantity });
-  //     },
-  //   });
-  // }, [debouncedQuantity]);
+  useEffect(() => {
+    if (!isClick) return;
+    updateItemQuantity({
+      id,
+      quantity: debouncedQuantity,
+      onFail: (state) => {
+        syncActualQuantity({ id, quantity: state.cartItemById[id].quantity });
+      },
+      onSuccess: () => {
+        setIsClick(false);
+      },
+    });
+  }, [debouncedQuantity]);
 
   return (
     <Button
@@ -37,13 +42,13 @@ export const IncreaseQuantityButton = miniCartChildFactory(({ id }) => {
       _hover={{
         bg: "button.hover",
       }}
-      _active={{
-        bg: "button.focus",
-      }}
       w="54px"
       h="54px"
       borderRadius="8px"
-      onClick={() => increase({ id, quantity })}
+      onClick={() => {
+        setIsClick(true);
+        increase({ id, quantity });
+      }}
       isDisabled={isLoading}
     >
       +

@@ -1,8 +1,7 @@
 import { Button } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDebounce } from "../../../hooks/useDebounce";
 import { usePokemonCartStore } from "../../../stores/cart";
-import { isFalsy } from "../../../utils/common";
 import { miniCartChildFactory } from "../miniCartChildFactory";
 import {
   useItemQuantity,
@@ -11,6 +10,7 @@ import {
 
 export const DecreaseQuantityButton = miniCartChildFactory(({ id }) => {
   const quantity = useItemQuantity(id);
+  const [isClick, setIsClick] = useState(false);
   const decrease = useItemQuantityCounter((state) => state.decrease);
   const syncActualQuantity = useItemQuantityCounter(
     (state) => state.syncActualQuantity
@@ -22,15 +22,21 @@ export const DecreaseQuantityButton = miniCartChildFactory(({ id }) => {
 
   const debouncedQuantity = useDebounce(quantity);
 
-  // useEffect(() => {
-  //   updateItemQuantity({
-  //     id,
-  //     quantity,
-  //     onFail: (state) => {
-  //       syncActualQuantity({ id, quantity: state.cartItemById[id].quantity });
-  //     },
-  //   });
-  // }, [debouncedQuantity]);
+  useEffect(() => {
+    if (!isClick) return;
+    updateItemQuantity({
+      id,
+      quantity: debouncedQuantity,
+      onFail: (state) => {
+        syncActualQuantity({ id, quantity: state.cartItemById[id].quantity });
+      },
+      onSuccess: () => {
+        setIsClick(false);
+      },
+    });
+  }, [debouncedQuantity]);
+
+  const isOneLeft = quantity === 1;
 
   return (
     <Button
@@ -38,14 +44,14 @@ export const DecreaseQuantityButton = miniCartChildFactory(({ id }) => {
       _hover={{
         bg: "button.hover",
       }}
-      _active={{
-        bg: "button.focus",
-      }}
       w="54px"
       h="54px"
       borderRadius="8px"
-      onClick={() => decrease({ id, quantity })}
-      isDisabled={isFalsy(quantity) || isLoading}
+      onClick={() => {
+        setIsClick(true);
+        decrease({ id, quantity });
+      }}
+      isDisabled={isOneLeft || isLoading}
     >
       -
     </Button>

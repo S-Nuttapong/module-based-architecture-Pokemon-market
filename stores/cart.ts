@@ -53,6 +53,9 @@ export const pokemonCartStoreFactory = (apis: ICartServices) => create<ICartStat
         try {
             set({ isLoading: true })
             const { total, item } = await apis.updateItemQuantity({ id, quantity })
+
+            console.debug({ total, item })
+
             set((state) => {
                 state.cartItemById[item.id] = item
                 state.total = total

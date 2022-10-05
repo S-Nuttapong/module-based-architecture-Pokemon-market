@@ -25,9 +25,6 @@ export const AddToCartButton = (props: IPokemonCard) => {
       _hover={{
         bg: "button.hover",
       }}
-      _active={{
-        bg: "button.focus",
-      }}
       onClick={handleAddToCart}
       isLoading={isLoading && isBeginAddedToCart}
       isDisabled={isLoading || props.isOutOfStock}
