@@ -11,7 +11,7 @@ import {
 
 import { useEffect, useMemo } from "react";
 import { InferGetStaticPaths } from "../../@types/type-utils/next-helpers";
-import { CardsPagination, Pagination } from "../../modules/CardsPagination";
+import { CardsPagination } from "../../modules/CardsPagination";
 import { MiniCart } from "../../modules/mini-cart/MiniCart";
 
 import { PokemonFilter } from "../../modules/search-filter/Filter";
@@ -80,7 +80,7 @@ const MobileSearch = (props: ISearch) => (
   <Search w="100%" {...props} display={["flex", "flex", "none"]} />
 );
 
-export default function Home(
+export default function PokemonCardsMarketPage(
   props: Awaited<ReturnType<typeof getStaticProps>>["props"]
 ) {
   const { pokemonList: pagePokemonList, meta } = props;
