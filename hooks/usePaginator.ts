@@ -1,27 +1,46 @@
+import has from 'lodash/has';
 import { useMemo } from 'react';
 
-export interface IPaginationRange {
-    totalPages: number,
+export interface IBasePagination {
     pageSize: number,
     currentPage: number
     siblingCount?: number,
     configs?: any
 }
 
+export interface IAutoDeterminePaginationProps extends IBasePagination {
+    totalPagesItemsSize: number
+}
+
+export interface IPredeterminePaginationProps extends IBasePagination {
+    totalPages: number
+}
+
+export type IPagination = IAutoDeterminePaginationProps | IPredeterminePaginationProps
+
+export const DOTS = '...';
+
 const range = (start: number, end: number) => {
     let length = end - start + 1;
     return Array.from({ length }, (_, idx) => idx + start);
 };
 
-export const DOTS = '...';
+const isPredeterminePagination = (props: IPagination): props is IPredeterminePaginationProps => has(props, "totalPages")
 
-export const usePaginationRange = (props: IPaginationRange) => {
+const getTotalPages = (props: IPagination): number => {
+    if (isPredeterminePagination(props)) return props.totalPages
+    const { totalPagesItemsSize, pageSize } = props
+    return Math.ceil(totalPagesItemsSize / pageSize);
+}
+
+export const usePaginator = (props: IPagination) => {
     const {
-        totalPages,
         pageSize,
         siblingCount = 1,
         currentPage
     } = props
+
+    const totalPages = getTotalPages(props)
 
     const paginationRange = useMemo(() => {
         // Pages count is determined as siblingCount + firstPage + lastPage + currentPage + 2*DOTS

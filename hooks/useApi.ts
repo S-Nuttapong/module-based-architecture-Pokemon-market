@@ -2,7 +2,10 @@ import { useState } from "react"
 import { GenericApi } from "../@types/type-utils/asyncFunction"
 
 /**
- * @todo: replace this with React query, should API support
+ * simple hook to provide remote state
+ * @params action your api
+ * @todo: replace this with React query, should we the need to implement infinite scroll query
+ * @return action with loading error, result state automatically tracked
  */
 export const useApi = <TAction extends GenericApi, TError = Error>(action: TAction) => {
     const [isLoading, setIsLoading] = useState(false)

@@ -6,12 +6,12 @@ import last from "lodash/last";
 import Link from "next/link";
 import React from "react";
 import {
-  usePaginationRange,
+  usePaginator,
   DOTS,
-  IPaginationRange,
-} from "../hooks/usePagination";
+  IPredeterminePaginationProps,
+} from "../hooks/usePaginator";
 
-interface IPagination extends IPaginationRange {
+interface IPagination extends IPredeterminePaginationProps {
   onPageChange?: (pageNumber: number) => void;
 }
 
@@ -23,7 +23,7 @@ interface IPagination extends IPaginationRange {
 export const LinkBasedPagination = (props: IPagination) => {
   const { onPageChange = noop, currentPage } = props;
 
-  const paginationRange = usePaginationRange(props);
+  const paginationRange = usePaginator(props);
 
   // if (currentPage === 0 || paginationRange.length < 2) {
   //   return null;
