@@ -1,11 +1,12 @@
 import create from 'zustand'
 import { ICartServices, IPokemonCart, QuantityChangePayload } from '../services/cart-services/cartServicesFactory'
-import { clientCartServices } from '../services/cart-services/clientCartServices'
+
 import { immer } from 'zustand/middleware/immer'
 import { noop } from '../utils/common'
 import { devtools } from 'zustand/middleware'
 import { WithError } from '../@types/type-utils/error'
 import { IPokemonCard } from '../services/pokemon-card-services/pokemonCardServices'
+import { storageBasedCartServices } from '../services/cart-services/storageBasedCartServices'
 
 
 type EventResultHandlers = { onFail?: (currentState: WithError<IPokemonCart>) => void, onSuccess?: (currentState: IPokemonCart) => void }
@@ -86,4 +87,4 @@ export const pokemonCartStoreFactory = (apis: ICartServices) => create<ICartStat
 }))))
 
 //TODO: port the real BE services once ready
-export const usePokemonCartStore = pokemonCartStoreFactory(clientCartServices(typeof window === 'undefined' ? {} as Storage : localStorage))
+export const usePokemonCartStore = pokemonCartStoreFactory(storageBasedCartServices(typeof window === 'undefined' ? {} as Storage : localStorage))
