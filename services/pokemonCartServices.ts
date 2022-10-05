@@ -1,13 +1,26 @@
-import { safeParseJSON } from "../../utils/safeParseJSON"
+import { safeParseJSON } from "../utils/safeParseJSON"
 import { nanoid } from 'nanoid'
-import { IPokemonCartServices } from "../../@types/pokemonCart"
-import { IPokemonCart } from "./CartItemID"
+import { CartItemID, IPokemonCart, IPokemonCartItem } from "../@types/pokemonCart"
+import { IPokemonCard } from "../@types/pokemonCard"
+import { PartialExcept } from "../@types/type-utils/partial"
 
 
-type CartFields = keyof IPokemonCart
+export type QuantityChangePayload = { id: CartItemID, quantity: number }
+
+export type CartMutationResults<TFields extends keyof IPokemonCart = "total", TObject = {}> = PartialExcept<IPokemonCart, TFields> & TObject
+
+export interface IPokemonCartServices {
+    addToCart: (item: IPokemonCard) => Promise<CartMutationResults<"total", { item: IPokemonCartItem }>>
+    updateItemQuantity: (payload: QuantityChangePayload) => Promise<CartMutationResults<"total", { item: IPokemonCartItem }>>
+    clearAllItems: () => Promise<{ status: 'Success' | 'Fail' }>
+    fetch: () => Promise<IPokemonCart>
+}
+
+
+export type CartFields = keyof IPokemonCart
 
 /**
- * Client based cart services leveraged on window storage, until we have proper BE
+ * storage based cart services leveraged on window storage, until we have proper BE
  * @todo Consider adopting locale forage, and dependency type, should incognito mode be required. Also make sure to add await setter and getter, should locale forage be adopted 
  * @note Although, storage is synchronous, we have to cast async function to adhere to the interface, this will come in handy when changing to async storage like locale forage
  * @caveat This only works on client side, do not use on server side ! 

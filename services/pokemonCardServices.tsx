@@ -1,6 +1,6 @@
 import axios from "axios";
 import { PokemonTCG } from "pokemon-tcg-sdk-typescript";
-import { IPokemonCard } from "../../@types/pokemonCard";
+import { IPokemonCard } from "../@types/pokemonCard";
 
 export type PokemonCardParameters = PokemonTCG.Parameter;
 

@@ -4,14 +4,13 @@ import { noop } from '../utils/common'
 import { devtools } from 'zustand/middleware'
 import { WithError } from '../@types/type-utils/error'
 import { IPokemonCard } from "../@types/pokemonCard"
-import { storageBasedCartServices } from '../services/pokemon-cart/storageBasedPokemonCartServices'
-import { IPokemonCartServices, QuantityChangePayload } from '../@types/pokemonCart'
-import { IPokemonCart } from "../services/pokemon-cart/CartItemID"
+import { IPokemonCartServices, QuantityChangePayload, storageBasedCartServices } from '../services/pokemonCartServices'
+import { IPokemonCart } from '../@types/pokemonCart'
 
 
-type EventResultHandlers = { onFail?: (currentState: WithError<IPokemonCart>) => void, onSuccess?: (currentState: IPokemonCart) => void }
+type CartStoreEventResultHandlers = { onFail?: (currentState: WithError<IPokemonCart>) => void, onSuccess?: (currentState: IPokemonCart) => void }
 
-type WithResultHandlers<TPayload = {}> = TPayload & EventResultHandlers
+type WithResultHandlers<TPayload = {}> = TPayload & CartStoreEventResultHandlers
 
 export interface ICartState extends IPokemonCart {
     isLoading: true | false, //note: immer can not infer true/false as boolean, so we have to assign literal type instead

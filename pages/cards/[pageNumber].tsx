@@ -21,7 +21,7 @@ import {
 } from "../../modules/search-filter/useSearchFilter";
 import { usePokemonCartStore } from "../../stores/pokemon-cart";
 import { isNonEmptyArray } from "../../utils/common";
-import { pokemonCardServices } from "../../services/pokemon-cards/pokemonCardServices";
+import { pokemonCardServices } from "../../services/pokemonCardServices";
 
 import { ProductCardGrid } from "../../modules/product-card/ProductCardGrid";
 import { SEOMeta } from "../../components/SEOMeta";

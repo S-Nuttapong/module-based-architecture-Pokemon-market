@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useApi } from "../../hooks/useApi";
 import merge from "lodash/merge";
 import { isFalsy, isNonEmptyArray } from "../../utils/common";
-import { pokemonCardServices } from "../../services/pokemon-cards/pokemonCardServices";
+import { pokemonCardServices } from "../../services/pokemonCardServices";
 import { IPokemonCard } from "../../@types/pokemonCard";
 
 const makeSearchQuery = (searchTerms: typeof INITIAL_SEARCH_TERMS) => {
