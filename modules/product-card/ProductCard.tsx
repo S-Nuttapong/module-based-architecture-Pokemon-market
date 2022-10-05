@@ -1,9 +1,11 @@
 import { Flex, Text, Stack, HStack, Box } from "@chakra-ui/react";
 import Image from "next/image";
-import { IPokemonCard } from "../../@types/pokemonAPIs";
+import { usePriceFormatter } from "../../hooks/usePriceFormatter";
+import { IPokemonCard } from "../../services/pokemon-card-services/pokemonCardServices";
 import { AddToCartButton } from "./AddToCartButton";
 
 export const ProductCard = (props: IPokemonCard) => {
+  const formatPrice = usePriceFormatter();
   return (
     <Box h="300px">
       <Flex h="50%" position="relative" justifyContent="center">
@@ -52,8 +54,8 @@ export const ProductCard = (props: IPokemonCard) => {
             }
             minW="max-content"
           >
-            <Text fontSize="12px">$2.29</Text>
-            <Text fontSize="12px">Out of stock</Text>
+            <Text fontSize="12px">{formatPrice(props.price)}</Text>
+            {props.isOutOfStock && <Text fontSize="12px">Out of stock</Text>}
           </HStack>
           <AddToCartButton {...props} />
         </Stack>

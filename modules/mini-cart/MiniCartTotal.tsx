@@ -2,6 +2,7 @@ import { Button, Flex, Stack, Text } from "@chakra-ui/react";
 import isEmpty from "lodash/isEmpty";
 import Link from "next/link";
 import React from "react";
+import { usePriceFormatter } from "../../hooks/usePriceFormatter";
 import { usePokemonCartStore } from "../../stores/cart";
 import { currencyAdder } from "../../utils/currencyAdder";
 
@@ -24,10 +25,8 @@ export const MiniCartTotal = () => {
     0
   );
   const cartTotal = usePokemonCartStore((state) => state.total);
-  const currency = usePokemonCartStore((state) => state.currency);
-  const addCurrency = currencyAdder(currency);
-
   const hasNoCartItems = isEmpty(cartItemIds);
+  const formatPrice = usePriceFormatter();
 
   return (
     <Stack width="100%" paddingBottom="48px" spacing="18px">
@@ -37,7 +36,7 @@ export const MiniCartTotal = () => {
       />
       <MiniCartTotalCommonText
         label="Total price"
-        value={addCurrency(cartTotal, "-")}
+        value={formatPrice(cartTotal, "-")}
       />
       <Link passHref href="./payment">
         <Button

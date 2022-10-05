@@ -1,5 +1,5 @@
-import { IPokemonCard } from "../../@types/pokemonAPIs"
 import { PartialExcept } from "../../@types/type-utils/partial"
+import { IPokemonCard } from "../pokemon-card-services/pokemonCardServices"
 
 export type CartItemID = string
 

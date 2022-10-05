@@ -1,12 +1,12 @@
 import { Grid, GridItem } from "@chakra-ui/react";
-import { IPokemonCard } from "../../@types/pokemonAPIs";
 import React from "react";
+import { IPokemonCard } from "../../services/pokemon-card-services/pokemonCardServices";
 import { ProductCard } from "./ProductCard";
 
 interface IPokemonCardList {
   pokemonList: IPokemonCard[];
 }
-export const PokemonCardGrid = ({ pokemonList = [] }: IPokemonCardList) => (
+export const ProductCardGrid = ({ pokemonList = [] }: IPokemonCardList) => (
   <Grid
     gridTemplateColumns="repeat(auto-fill, minmax(150px,1fr) )"
     columnGap="16px"

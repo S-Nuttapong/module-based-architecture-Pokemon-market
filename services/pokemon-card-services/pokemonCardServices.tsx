@@ -1,10 +1,13 @@
 import axios from "axios";
 import { PokemonTCG } from "pokemon-tcg-sdk-typescript";
 
-export interface IPokemonCard extends PokemonTCG.Card {
-  price?: number;
-  isOutOfStock?: boolean;
+export interface IPrice {
+  price: number;
+  isOutOfStock: boolean;
+  inventory?: number;
 }
+
+export interface IPokemonCard extends PokemonTCG.Card, IPrice {}
 
 export type PokemonCardParameters = PokemonTCG.Parameter;
 
@@ -16,6 +19,6 @@ export const pokemonCardServices = {
       method: "get",
       params,
     });
-    return results.data as IPokemonCard[];
+    return results.data as PokemonTCG.Card[];
   },
 };

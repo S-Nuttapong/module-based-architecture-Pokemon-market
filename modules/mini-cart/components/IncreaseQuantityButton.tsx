@@ -21,15 +21,15 @@ export const IncreaseQuantityButton = miniCartChildFactory(({ id }) => {
 
   const debouncedQuantity = useDebounce(quantity);
 
-  useEffect(() => {
-    updateItemQuantity({
-      id,
-      quantity,
-      onFail: (state) => {
-        syncActualQuantity({ id, quantity: state.cartItemById[id].quantity });
-      },
-    });
-  }, [debouncedQuantity]);
+  // useEffect(() => {
+  //   updateItemQuantity({
+  //     id,
+  //     quantity,
+  //     onFail: (state) => {
+  //       syncActualQuantity({ id, quantity: state.cartItemById[id].quantity });
+  //     },
+  //   });
+  // }, [debouncedQuantity]);
 
   return (
     <Button

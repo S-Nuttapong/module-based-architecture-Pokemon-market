@@ -2,7 +2,7 @@ import { Flex, SelectProps } from "@chakra-ui/react";
 import { OptionSelect } from "../../components/OptionSelect";
 import { useApi } from "../../hooks/useApi";
 import React, { useEffect, useMemo } from "react";
-import { pokemonCardServic } from "../../services/pokemonCardServices";
+import { pokemonCardServices } from "../../services/pokemon-card-services/pokemonCardServices";
 
 type FilterLabels = "Rarity" | "Type" | "Set";
 
@@ -15,14 +15,14 @@ interface IPokemonFilter {
   isLoading?: boolean;
 }
 
-const typeOptions = Object.entries(pokemonCardServic.Type).map(
+const typeOptions = Object.entries(pokemonCardServices.Type).map(
   ([_, typeValue]) => ({
     value: typeValue,
     label: typeValue,
   })
 );
 
-const rarityOptions = Object.entries(pokemonCardServic.Rarity).map(
+const rarityOptions = Object.entries(pokemonCardServices.Rarity).map(
   ([_, rarityValue]) => ({
     value: rarityValue,
     label: rarityValue,
@@ -39,7 +39,7 @@ const styles: SelectProps = {
 };
 
 const SetFilter = ({ onFilter, isLoading }: IPokemonFilter) => {
-  const [data, getAllSets] = useApi(pokemonCardServic.getAllSets);
+  const [data, getAllSets] = useApi(pokemonCardServices.getAllSets);
 
   const setOptions = useMemo(
     () =>

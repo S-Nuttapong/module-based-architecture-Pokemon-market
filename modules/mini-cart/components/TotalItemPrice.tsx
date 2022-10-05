@@ -1,15 +1,14 @@
 import { Text } from "@chakra-ui/react";
 import React from "react";
+import { usePriceFormatter } from "../../../hooks/usePriceFormatter";
 import { usePokemonCartStore } from "../../../stores/cart";
-import { currencyAdder } from "../../../utils/currencyAdder";
 import { miniCartChildFactory } from "../miniCartChildFactory";
 
 export const TotalItemPrice = miniCartChildFactory(({ id }) => {
-  const currency = usePokemonCartStore((state) => state.currency);
+  const formatPrice = usePriceFormatter();
   const itemTotal = usePokemonCartStore(
     (state) => state.cartItemById[id].itemTotal
   );
-  const addCurrency = currencyAdder(currency);
 
-  return <Text color="content.primary">{addCurrency(itemTotal)}</Text>;
+  return <Text color="content.primary">{formatPrice(itemTotal)}</Text>;
 });

@@ -2,9 +2,9 @@ import { useState } from "react";
 import { useApi } from "../../hooks/useApi";
 import merge from "lodash/merge";
 import { isFalsy } from "../../utils/common";
-import { pokemonCardServic } from "../../services/pokemonCardServices";
+import { pokemonCardServices } from "../../services/pokemon-card-services/pokemonCardServices";
 
-const findCardsDI = pokemonCardServic.findCardsByQueries
+const findCardsDI = pokemonCardServices.findCardsByQueries
 
 //name search do wild card
 //types search do nothing

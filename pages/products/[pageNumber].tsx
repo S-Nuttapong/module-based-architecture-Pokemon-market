@@ -9,17 +9,19 @@ import {
   Text,
 } from "@chakra-ui/react";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { InferGetStaticPaths } from "../../@types/type-utils/next-helpers";
 import { Pagination } from "../../components/Pagination";
 import { MiniCart } from "../../modules/mini-cart/MiniCart";
-import { PokemonCardGrid } from "../../modules/product-card/ProductCardGrid";
+
 import { PokemonFilter } from "../../modules/search-filter/Filter";
 import { ISearch, Search } from "../../modules/search-filter/Search";
 import { useSearchFilter } from "../../modules/search-filter/useSearchFilter";
 import { usePokemonCartStore } from "../../stores/cart";
 import { isNonEmptyArray } from "../../utils/common";
-import { pokemonCardServices } from "../../services/pokemonCardServices";
+import { pokemonCardServices } from "../../services/pokemon-card-services/pokemonCardServices";
+import { HackPricePoputator } from "../../utils/HackPricePopulator";
+import { ProductCardGrid } from "../../modules/product-card/ProductCardGrid";
 
 const POKEMON_MARKET_META = {
   pageSize: 20,
@@ -29,15 +31,25 @@ const POKEMON_MARKET_META = {
 export const getStaticProps = async ({
   params,
 }: InferGetStaticPaths<typeof getStaticPaths>) => {
-  const currentPage = Number(params.page);
-  const pokemonList = await pokemonCardServices.getAll({
-    page: currentPage || 1,
-    ...POKEMON_MARKET_META,
-  });
+  const currentPage = Number(params.pageNumber);
+
+  const hackPricePopulator = new HackPricePoputator();
+
+  const pokemonList = hackPricePopulator.populateAndTrackPrice(
+    await pokemonCardServices.getAll({
+      page: currentPage || 1,
+      ...POKEMON_MARKET_META,
+    })
+  );
+
   return {
     props: {
       pokemonList,
-      meta: { currentPage, ...POKEMON_MARKET_META },
+      meta: {
+        currentPage,
+        ...POKEMON_MARKET_META,
+        hackPriceRecords: hackPricePopulator.getRecord(),
+      },
     },
   };
 };
@@ -50,8 +62,8 @@ export async function getStaticPaths() {
       .map((_, index) => `${index + 1}`);
   };
 
-  const paths = getPageLists().map((page) => ({
-    params: { page },
+  const paths = getPageLists().map((pageNumber) => ({
+    params: { pageNumber },
   }));
 
   return { paths, fallback: "blocking" } as const;
@@ -68,9 +80,19 @@ const MobileSearch = (props: ISearch) => (
 export default function Home(
   props: Awaited<ReturnType<typeof getStaticProps>>["props"]
 ) {
-  const { pokemonList, meta } = props;
+  const { pokemonList: pagePokemonList, meta } = props;
   const initializeCart = usePokemonCartStore((state) => state.initializeCart);
   const [data, searchFilter] = useSearchFilter();
+  const hackPricePopulator = new HackPricePoputator(meta.hackPriceRecords);
+
+  const searchedPokemonList = useMemo(() => {
+    if (!data.results) return;
+    return hackPricePopulator.poplulatePrice(data.results);
+  }, [data.results]);
+
+  const pokemonList = isNonEmptyArray(searchedPokemonList)
+    ? searchedPokemonList
+    : pagePokemonList;
 
   useEffect(() => {
     initializeCart();
@@ -126,11 +148,7 @@ export default function Home(
         {data.isLoading ? (
           <Spinner />
         ) : (
-          <PokemonCardGrid
-            pokemonList={
-              isNonEmptyArray(data.results) ? data.results : pokemonList
-            }
-          />
+          <ProductCardGrid pokemonList={pokemonList} />
         )}
       </Stack>
 

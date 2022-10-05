@@ -1,6 +1,6 @@
 import { Button } from "@chakra-ui/react";
 import { useState } from "react";
-import { IPokemonCard } from "../../@types/pokemonAPIs";
+import { IPokemonCard } from "../../services/pokemon-card-services/pokemonCardServices";
 import { usePokemonCartStore } from "../../stores/cart";
 
 /**
@@ -30,7 +30,7 @@ export const AddToCartButton = (props: IPokemonCard) => {
       }}
       onClick={handleAddToCart}
       isLoading={isLoading && isBeginAddedToCart}
-      isDisabled={isLoading}
+      isDisabled={isLoading || props.isOutOfStock}
     >
       Add to cart
     </Button>
