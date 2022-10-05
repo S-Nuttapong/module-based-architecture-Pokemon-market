@@ -17,6 +17,7 @@ const colors = {
     primary: "#363946",
     secondary: "#EA7C69",
     disabled: "#312f3c",
+    hover: "#4d4f5a",
     focus: "#4d4f5a",
   },
   bg: {

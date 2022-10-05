@@ -43,6 +43,12 @@ export const MiniCartTotal = () => {
         <Button
           bg="button.secondary"
           color="content.primary"
+          _hover={{
+            boxShadow: "0px 8px 24px rgba(234, 124, 105, 0.32)",
+          }}
+          _active={{
+            boxShadow: "0px 8px 24px rgba(234, 124, 105, 0.32)",
+          }}
           borderRadius="8px"
           height="48px"
           isDisabled={hasNoCartItems}

@@ -35,6 +35,12 @@ export const DecreaseQuantityButton = miniCartChildFactory(({ id }) => {
   return (
     <Button
       bg="button.primary"
+      _hover={{
+        bg: "button.hover",
+      }}
+      _active={{
+        bg: "button.focus",
+      }}
       w="54px"
       h="54px"
       borderRadius="8px"

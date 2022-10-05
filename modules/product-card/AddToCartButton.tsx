@@ -22,6 +22,12 @@ export const AddToCartButton = (props: IPokemonCard) => {
   return (
     <Button
       bg="button.primary"
+      _hover={{
+        bg: "button.hover",
+      }}
+      _active={{
+        bg: "button.focus",
+      }}
       onClick={handleAddToCart}
       isLoading={isLoading && isBeginAddedToCart}
       isDisabled={isLoading}

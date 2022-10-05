@@ -13,7 +13,7 @@ import { IPokemonCard, PokemonQueryParameters } from "../@types/pokemonAPIs";
 
 import { useSearchFilter } from "../modules/search-filter/useSearchFilter";
 
-import { isNonEmptyArray } from "../utils/common";
+import { isNonEmptyArray, noop } from "../utils/common";
 import React from "react";
 import { usePokemonCartStore } from "../stores/cart";
 
@@ -21,6 +21,16 @@ import { PokemonFilter } from "../modules/search-filter/Filter";
 import { MiniCart } from "../modules/mini-cart/MiniCart";
 import { PokemonCardGrid } from "../modules/product-card/ProductCardGrid";
 import { ISearch, Search } from "../modules/search-filter/Search";
+import {
+  Container,
+  usePaginator,
+  Paginator,
+  Previous,
+  PageGroup,
+  Next,
+} from "chakra-paginator";
+import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import { Pagination } from "../components/Pagination";
 
 const pokemonService = {
   getAll: async (params?: PokemonQueryParameters) => {
@@ -67,6 +77,7 @@ const Home = () => {
       minH="100vh"
       w="100vw"
       justifyContent="center"
+      flexDir="column"
       px={[0, "30px", "60px", "120px"]}
     >
       <Stack w="100%" padding={["20px", "20px", "30px", "30px"]} spacing="24px">
@@ -111,6 +122,13 @@ const Home = () => {
             }
           />
         )}
+
+        <Pagination
+          totalCount={2500}
+          onPageChange={noop}
+          currentPage={1}
+          pageSize={20}
+        />
       </Stack>
     </Flex>
   );

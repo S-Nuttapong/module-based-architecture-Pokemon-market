@@ -16,7 +16,7 @@ import {
 import React, { FC } from "react";
 import { ShoppingBagIcon } from "../../public/icons/ShoppingBagIcon";
 import { usePokemonCartStore } from "../../stores/cart";
-import { MiniCartTotal } from "./ChakraButtonRef";
+import { MiniCartTotal } from "./MiniCartTotal";
 import { MiniCartLineItems } from "./MiniCartLineItems";
 import { useItemQuantityCounter } from "./useItemsQuantityCounter";
 
@@ -38,6 +38,9 @@ export const MiniCart: FC = () => {
         aria-label="Cart"
         borderRadius="8px"
         _hover={{
+          boxShadow: "0px 8px 24px rgba(234, 124, 105, 0.32)",
+        }}
+        _active={{
           boxShadow: "0px 8px 24px rgba(234, 124, 105, 0.32)",
         }}
         icon={
@@ -83,6 +86,9 @@ export const MiniCart: FC = () => {
                 onClick={onClose}
                 bg="button.secondary"
                 _hover={{
+                  boxShadow: "0px 8px 24px rgba(234, 124, 105, 0.32)",
+                }}
+                _active={{
                   boxShadow: "0px 8px 24px rgba(234, 124, 105, 0.32)",
                 }}
                 aria-label="Close Cart"
