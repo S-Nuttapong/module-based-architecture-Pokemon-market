@@ -11,7 +11,7 @@ import {
 
 import { useEffect, useMemo } from "react";
 import { InferGetStaticPaths } from "../../@types/type-utils/next-helpers";
-import { Pagination } from "../../modules/CardsPagination";
+import { CardsPagination, Pagination } from "../../modules/CardsPagination";
 import { MiniCart } from "../../modules/mini-cart/MiniCart";
 
 import { PokemonFilter } from "../../modules/search-filter/Filter";
@@ -158,7 +158,7 @@ export default function Home(
         </Stack>
 
         <Box mb="30px">
-          <Pagination
+          <CardsPagination
             totalPages={meta.totalPages}
             currentPage={meta.currentPage}
             pageSize={meta.pageSize}

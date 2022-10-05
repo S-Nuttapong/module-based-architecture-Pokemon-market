@@ -20,7 +20,7 @@ interface IPagination extends IPaginationRange {
  * @todo: extract and make it more general, should it gets used other pages
  * @returns
  */
-export const Pagination = (props: IPagination) => {
+export const CardspnpPagination = (props: IPagination) => {
   const { onPageChange = noop, currentPage } = props;
 
   const paginationRange = usePaginationRange(props);
