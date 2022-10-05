@@ -11,18 +11,21 @@ import {
 
 import { useEffect, useMemo } from "react";
 import { InferGetStaticPaths } from "../../@types/type-utils/next-helpers";
-import { CardsPagination } from "../../modules/CardsPagination";
 import { MiniCart } from "../../modules/mini-cart/MiniCart";
 
 import { PokemonFilter } from "../../modules/search-filter/Filter";
 import { ISearch, Search } from "../../modules/search-filter/Search";
-import { useSearchFilter } from "../../modules/search-filter/useSearchFilter";
+import {
+  SearchStatus,
+  useSearchFilter,
+} from "../../modules/search-filter/useSearchFilter";
 import { usePokemonCartStore } from "../../stores/cart";
 import { isNonEmptyArray } from "../../utils/common";
 import { pokemonCardServices } from "../../services/pokemon-card-services/pokemonCardServices";
 import { HackPricePoputator } from "../../utils/HackPricePopulator";
 import { ProductCardGrid } from "../../modules/product-card/ProductCardGrid";
 import { SEOMeta } from "../../components/SEOMeta";
+import { LinkBasedPagination } from "../../modules/LinkBasedPagination";
 
 const POKEMON_MARKET_CARDS_META = {
   pageSize: 20,
@@ -88,14 +91,34 @@ export default function PokemonCardsMarketPage(
   const [data, searchFilter] = useSearchFilter();
   const hackPricePopulator = new HackPricePoputator(meta.hackPriceRecords);
 
+  const searchResult = data.results;
+
   const searchedPokemonList = useMemo(() => {
-    if (!data.results) return;
-    return hackPricePopulator.poplulatePrice(data.results);
-  }, [data.results]);
+    if (searchResult?.status === SearchStatus.Found) {
+      return hackPricePopulator.poplulatePrice(searchResult.data);
+    }
+    return [];
+  }, [searchResult]);
 
   const pokemonList = isNonEmptyArray(searchedPokemonList)
     ? searchedPokemonList
     : pagePokemonList;
+
+  const ProductCardsGridViewBySearchStatus = {
+    [SearchStatus.Cleared]: () => <ProductCardGrid pokemonList={pokemonList} />,
+    [SearchStatus.Found]: () => (
+      <ProductCardGrid pokemonList={searchedPokemonList} />
+    ),
+    [SearchStatus.NotFound]: () => (
+      <Text color="content.primary" w="100%" textAlign="center" fontSize="18px">
+        Oops, we could not find the Pokemons you are looking for...
+      </Text>
+    ),
+  };
+
+  const searchStatus = searchResult?.status ?? SearchStatus.Cleared;
+
+  const ProductCardGridView = ProductCardsGridViewBySearchStatus[searchStatus];
 
   useEffect(() => {
     initializeCart();
@@ -151,14 +174,19 @@ export default function PokemonCardsMarketPage(
           </Flex>
 
           {data.isLoading ? (
-            <Spinner />
+            <Flex justifyContent="center" alignItems="center">
+              <Spinner
+                color="content.primary"
+                size={["md", "lg", "xl", "xl"]}
+              />
+            </Flex>
           ) : (
-            <ProductCardGrid pokemonList={pokemonList} />
+            <ProductCardGridView />
           )}
         </Stack>
 
         <Box mb="30px">
-          <CardsPagination
+          <LinkBasedPagination
             totalPages={meta.totalPages}
             currentPage={meta.currentPage}
             pageSize={meta.pageSize}
