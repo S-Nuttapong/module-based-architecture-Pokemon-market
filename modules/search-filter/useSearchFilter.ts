@@ -1,13 +1,15 @@
-import { PokemonTCG } from "pokemon-tcg-sdk-typescript";
 import { useState } from "react";
 import { useApi } from "../../hooks/useApi";
 import merge from "lodash/merge";
 import { isFalsy } from "../../utils/common";
+import { pokemonCardServic } from "../../services/pokemonCardServices";
+
+const findCardsDI = pokemonCardServic.findCardsByQueries
 
 //name search do wild card
 //types search do nothing
 //rarity do exact match
-export const useSearchFilter = () => {
+export const useSearchFilter = (findCards = findCardsDI) => {
   const [searchTerms, setSearchTerm] = useState({
     set: "",
     rarity: "",
@@ -29,7 +31,7 @@ export const useSearchFilter = () => {
 
     if (areAllSearchTermsCleared) return [];
 
-    return await PokemonTCG.findCardsByQueries({ pageSize: 20, q: query });
+    return await findCards({ pageSize: 20, q: query });
   };
 
   return useApi(searchFilterHandler);

@@ -9,7 +9,6 @@ import {
   Text,
 } from "@chakra-ui/react";
 
-import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { InferGetStaticPaths } from "../../@types/type-utils/next-helpers";
 import { Pagination } from "../../components/Pagination";
@@ -20,7 +19,7 @@ import { ISearch, Search } from "../../modules/search-filter/Search";
 import { useSearchFilter } from "../../modules/search-filter/useSearchFilter";
 import { usePokemonCartStore } from "../../stores/cart";
 import { isNonEmptyArray } from "../../utils/common";
-import { pokemonService } from "../../services/product-card-service/pokemonService";
+import { pokemonCardServices } from "../../services/pokemonCardServices";
 
 const POKEMON_MARKET_META = {
   pageSize: 20,
@@ -31,7 +30,7 @@ export const getStaticProps = async ({
   params,
 }: InferGetStaticPaths<typeof getStaticPaths>) => {
   const currentPage = Number(params.page);
-  const pokemonList = await pokemonService.getAll({
+  const pokemonList = await pokemonCardServices.getAll({
     page: currentPage || 1,
     ...POKEMON_MARKET_META,
   });

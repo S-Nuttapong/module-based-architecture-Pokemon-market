@@ -2,7 +2,7 @@ import create from 'zustand'
 
 import { IPokemonCard } from '../@types/pokemonAPIs'
 import { ICartServices, IPokemonCart, QuantityChangePayload } from '../services/cart-services/cartServicesFactory'
-import { ClientCartServices } from '../services/cart-services/ClientCartServices'
+import { clientCartServices } from '../services/cart-services/clientCartServices'
 import { immer } from 'zustand/middleware/immer'
 import { noop } from '../utils/common'
 import { devtools } from 'zustand/middleware'
@@ -84,4 +84,4 @@ export const pokemonCartStoreFactory = (apis: ICartServices) => create<ICartStat
 }))))
 
 //TODO: port the real BE services once ready
-export const usePokemonCartStore = pokemonCartStoreFactory(ClientCartServices(typeof window === 'undefined' ? {} as Storage : localStorage))
+export const usePokemonCartStore = pokemonCartStoreFactory(clientCartServices(typeof window === 'undefined' ? {} as Storage : localStorage))
