@@ -15,6 +15,11 @@ interface IPagination extends IPaginationRange {
   onPageChange?: (pageNumber: number) => void;
 }
 
+/**
+ * specialized pagination for cards page
+ * @todo: extract and make it more general, should it gets used other pages
+ * @returns
+ */
 export const Pagination = (props: IPagination) => {
   const { onPageChange = noop, currentPage } = props;
 
@@ -38,7 +43,7 @@ export const Pagination = (props: IPagination) => {
 
   return (
     <HStack w="full" justifyContent="center" color="content.primary">
-      <Link passHref href={`./page-${Number(currentPage) - 1}`}>
+      <Link passHref href={`./${Number(currentPage) - 1}`}>
         <IconButton
           borderRadius="8px"
           bg="button.primary"
@@ -58,7 +63,7 @@ export const Pagination = (props: IPagination) => {
       {paginationRange.map((pageNumber) => {
         if (pageNumber === DOTS) return <Text>{pageNumber}</Text>;
         return (
-          <Link key={pageNumber} passHref href={`./deck-${pageNumber}`}>
+          <Link key={pageNumber} passHref href={`./${pageNumber}`}>
             <Button
               key={pageNumber}
               borderRadius="8px"
@@ -77,7 +82,7 @@ export const Pagination = (props: IPagination) => {
         );
       })}
 
-      <Link passHref href={`./page-${Number(currentPage) + 1}`}>
+      <Link passHref href={`./${Number(currentPage) + 1}`}>
         <IconButton
           borderRadius="8px"
           bg="button.primary"

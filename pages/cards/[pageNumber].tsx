@@ -11,7 +11,7 @@ import {
 
 import { useEffect, useMemo } from "react";
 import { InferGetStaticPaths } from "../../@types/type-utils/next-helpers";
-import { Pagination } from "../../components/Pagination";
+import { Pagination } from "../../modules/CardsPagination";
 import { MiniCart } from "../../modules/mini-cart/MiniCart";
 
 import { PokemonFilter } from "../../modules/search-filter/Filter";
@@ -41,7 +41,7 @@ export async function getStaticPaths() {
   };
 
   const paths = getPageLists().map((pageNumber) => ({
-    params: { pageNumber: `deck-${pageNumber}` },
+    params: { pageNumber },
   }));
 
   return { paths, fallback: "blocking" } as const;
