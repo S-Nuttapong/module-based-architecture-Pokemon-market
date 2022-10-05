@@ -1,12 +1,11 @@
 import create from 'zustand'
-
-import { IPokemonCard } from '../@types/pokemonAPIs'
 import { ICartServices, IPokemonCart, QuantityChangePayload } from '../services/cart-services/cartServicesFactory'
 import { clientCartServices } from '../services/cart-services/clientCartServices'
 import { immer } from 'zustand/middleware/immer'
 import { noop } from '../utils/common'
 import { devtools } from 'zustand/middleware'
 import { WithError } from '../@types/type-utils/error'
+import { IPokemonCard } from '../services/pokemon-card-services/pokemonCardServices'
 
 
 type EventResultHandlers = { onFail?: (currentState: WithError<IPokemonCart>) => void, onSuccess?: (currentState: IPokemonCart) => void }
