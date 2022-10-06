@@ -1,9 +1,9 @@
-import { Button, Flex, Stack, Text } from "@chakra-ui/react";
+import { Flex, Stack, Text } from "@chakra-ui/react";
 import isEmpty from "lodash/isEmpty";
-import Link from "next/link";
 import React from "react";
 import { usePriceFormatter } from "../../hooks/usePriceFormatter";
 import { usePokemonCartStore } from "../../stores/pokemon-cart";
+import { LinkButton } from "../../components/LinkButton";
 
 type MiniCartTotalCommonTextProps = {
   label: string;
@@ -37,23 +37,23 @@ export const MiniCartTotal = () => {
         label="Total price"
         value={formatPrice(cartTotal, "-")}
       />
-      <Link passHref href="./payment">
-        <Button
-          bg="button.secondary"
-          color="content.primary"
-          _hover={{
-            boxShadow: "0px 8px 24px rgba(234, 124, 105, 0.32)",
-          }}
-          _active={{
-            boxShadow: "0px 8px 24px rgba(234, 124, 105, 0.32)",
-          }}
-          borderRadius="8px"
-          height="48px"
-          isDisabled={hasNoCartItems}
-        >
-          Continue to Payment
-        </Button>
-      </Link>
+      <LinkButton
+        passHref
+        href="./payment"
+        bg="button.secondary"
+        color="content.primary"
+        _hover={{
+          boxShadow: "0px 8px 24px rgba(234, 124, 105, 0.32)",
+        }}
+        _active={{
+          boxShadow: "0px 8px 24px rgba(234, 124, 105, 0.32)",
+        }}
+        borderRadius="8px"
+        height="48px"
+        isDisabled={hasNoCartItems}
+      >
+        Continue to Payment
+      </LinkButton>
     </Stack>
   );
 };

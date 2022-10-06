@@ -5,6 +5,7 @@ import first from "lodash/first";
 import last from "lodash/last";
 import Link from "next/link";
 import React from "react";
+import { LinkButton } from "../components/LinkButton";
 import {
   usePaginator,
   DOTS,
@@ -15,6 +16,12 @@ interface IPagination extends IPredeterminePaginationProps {
   onPageChange?: (pageNumber: number) => void;
 }
 
+const buttonBaseStyles = {
+  borderRadius: "8px",
+  bg: "button.primary",
+  _hover: { bg: "button.hover" },
+  _focus: { bg: "button.focus" },
+};
 /**
  * specialized pagination for cards page
  * @todo: extract and make it more general, should it gets used other pages
@@ -24,10 +31,6 @@ export const LinkBasedPagination = (props: IPagination) => {
   const { onPageChange = noop, currentPage } = props;
 
   const paginationRange = usePaginator(props);
-
-  // if (currentPage === 0 || paginationRange.length < 2) {
-  //   return null;
-  // }
 
   const onNext = () => {
     onPageChange(currentPage + 1);
@@ -43,22 +46,16 @@ export const LinkBasedPagination = (props: IPagination) => {
 
   return (
     <HStack w="full" justifyContent="center" color="content.primary">
-      <Link passHref href={`./${Number(currentPage) - 1}`}>
-        <IconButton
-          borderRadius="8px"
-          bg="button.primary"
-          aria-label="Previous"
-          _hover={{
-            bg: "button.hover",
-          }}
-          _focus={{
-            bg: "button.focus",
-          }}
-          onClick={onPrevious}
-          isDisabled={firstPage === currentPage}
-          icon={<ChevronLeftIcon onClick={onPrevious} boxSize="1.25em" />}
-        />
-      </Link>
+      <LinkButton
+        buttonType="iconButton"
+        passHref
+        href={`./${Number(currentPage) - 1}`}
+        {...buttonBaseStyles}
+        aria-label="Previous"
+        onClick={onPrevious}
+        isDisabled={firstPage === currentPage}
+        icon={<ChevronLeftIcon onClick={onPrevious} boxSize="1.25em" />}
+      />
 
       {paginationRange.map((pageNumber) => {
         if (pageNumber === DOTS) return <Text>{pageNumber}</Text>;
@@ -81,22 +78,16 @@ export const LinkBasedPagination = (props: IPagination) => {
         );
       })}
 
-      <Link passHref href={`./${Number(currentPage) + 1}`}>
-        <IconButton
-          borderRadius="8px"
-          bg="button.primary"
-          aria-label="Previous"
-          _hover={{
-            bg: "button.hover",
-          }}
-          _focus={{
-            bg: "button.focus",
-          }}
-          isDisabled={lastPage === currentPage}
-          onClick={onNext}
-          icon={<ChevronRightIcon onClick={onPrevious} boxSize="1.25em" />}
-        />
-      </Link>
+      <LinkButton
+        passHref
+        href={`./${Number(currentPage) + 1}`}
+        buttonType="iconButton"
+        {...buttonBaseStyles}
+        aria-label="Previous"
+        isDisabled={lastPage === currentPage}
+        onClick={onNext}
+        icon={<ChevronRightIcon onClick={onPrevious} boxSize="1.25em" />}
+      />
     </HStack>
   );
 };
