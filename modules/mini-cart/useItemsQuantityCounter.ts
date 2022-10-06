@@ -16,6 +16,10 @@ interface ItemQuantityCounterState {
     quantityByItem: Record<CartItemID, number>
 }
 
+/**
+ * intermediate state for quantity decrement/increment, this will account for the mini cart item table,
+ * this will mitigate the input re-rendering entire mini-cart because of the way the design work which is separating all piece of number input apart, instead of grouping them together
+ */
 export const useItemQuantityCounter = create<ItemQuantityCounterState>()(immer(devtools(((set) => ({
     quantityByItem: {},
     decrease: ({ id, quantity: initialQuantity }) => set((state) => {

@@ -8,8 +8,13 @@ import {
   useItemQuantityCounter,
 } from "../useItemsQuantityCounter";
 
+/**
+ * @todo extract share logic into hook, and reuse in decrease button, and increase button
+ */
 export const DecreaseQuantityButton = miniCartChildFactory(({ id }) => {
   const quantity = useItemQuantity(id);
+
+  //note: isClick help prevent race condition between increase/decrease button, when the side effect is executed, only the action associated to the clicked button should be fired
   const [isClick, setIsClick] = useState(false);
   const decrease = useItemQuantityCounter((state) => state.decrease);
   const syncActualQuantity = useItemQuantityCounter(

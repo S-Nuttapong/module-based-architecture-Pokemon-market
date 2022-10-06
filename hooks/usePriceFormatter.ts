@@ -25,6 +25,12 @@ const DEFAULT_CONFIGS: Configs = {
     fixedPoints: 2
 }
 
+/**
+ * @param configs.fixedPoints will add a fix point to the format price, e.g. 7.99999 => 7.99
+ * @param configs.fallback this will be used when there is no price including price being zero 
+ * @param configs.useCurrency this will be your currency source, by default it use currency source from cart store, it also act as dependency injection for the unit testing
+ * @returns 
+ */
 export const usePriceFormatter = (configs = {} as Partial<Configs>) => {
     const { useCurrency, fallback: basedFallback, currencySymbolsMap, fixedPoints } = { ...DEFAULT_CONFIGS, ...configs }
     const currency = useCurrency()
