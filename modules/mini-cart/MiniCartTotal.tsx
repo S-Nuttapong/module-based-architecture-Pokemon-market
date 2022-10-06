@@ -39,7 +39,7 @@ export const MiniCartTotal = () => {
       />
       <LinkButton
         passHref
-        href="./payment"
+        href="../payment"
         bg="button.secondary"
         color="content.primary"
         _hover={{

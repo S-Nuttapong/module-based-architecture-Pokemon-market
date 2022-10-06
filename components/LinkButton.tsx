@@ -33,7 +33,7 @@ export const LinkButton = (props: ILinkButton) => {
   return (
     <Link passHref={passHref} href={href}>
       {isLinkAsButton(buttonType, rest) ? (
-        <Button {...rest}>{`children ${rest.children}`}</Button>
+        <Button {...rest}>{rest.children}</Button>
       ) : (
         <IconButton {...(rest as IconButtonProps)} />
       )}
