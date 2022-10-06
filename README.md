@@ -20,6 +20,7 @@ Done:
 - [x] code documentation
 
 To do:
+- [ ] and re-write market page from `cards/1` to `cards/`, and re-write home page `./`, to market page `cards/` 
 - [ ] infinite scroll to optimize image render, might need to check with design team  
 - [ ] unit testings
 - [ ] redefine the users journey, and see if how "real time" we need the market to be, in case of fully live market, the web socket would be very viable solution, but might need to check with BE if it's possible
