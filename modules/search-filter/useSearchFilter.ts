@@ -55,7 +55,7 @@ export const useSearchFilter = (configs?: typeof DEFAULT_CONFIGS) => {
 
     const data = await findCards({ pageSize: 20, q: query });
 
-    if (isNonEmptyArray(data)) return { data, status: SearchStatus.Found }
+    if (isNonEmptyArray(data)) return { data: data as IPokemonCard[], status: SearchStatus.Found }
 
     return { status: SearchStatus.NotFound, data: [] }
   };
