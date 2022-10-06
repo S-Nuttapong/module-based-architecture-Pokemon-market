@@ -4,6 +4,11 @@ const HackOutOfStockConfig = {
     outOfStockChance: 0.2,
 }
 
+/**
+ * temporary class to help define the product out of stock, so we can demonstrate disabled add to cart button 
+ * @todo check with business and design team, if we should expose the card inventory / stock at real time, 
+ * @todo if the real time need, we may need to discuss with BE about the possibility to adopt web socket, then we may re-assess the rendering pattern again, atm, it is ISR for web-vital and SEO benefit
+ */
 export class HackOutOfStockPoputator {
     private record: Record<string, IInventory>
     private configs: typeof HackOutOfStockConfig
