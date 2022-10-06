@@ -36,6 +36,10 @@ const POKEMON_MARKET_CARDS_META = {
     "Number one platform for trading Pokemon cards, we offer zero commission-fee, come trade your Pokemon cards, and get rich today !",
 };
 
+/**
+ * @todo check with business and design team, if we should expose the card inventory / stock at real time,
+ * @todo if the real time need, we may need to discuss with BE about the possibility to adopt web socket, then we may re-assess the rendering pattern again, atm, it is ISR (without revalidation) for web-vital and SEO benefit
+ */
 export async function getStaticPaths() {
   const getPageLists = (firstPagesToRender = 20) => {
     const dummy = null;
