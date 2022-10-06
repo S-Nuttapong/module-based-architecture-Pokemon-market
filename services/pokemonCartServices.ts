@@ -12,7 +12,7 @@ export type CartMutationResults<TFields extends keyof IPokemonCart = "total", TO
 export interface IPokemonCartServices {
     addToCart: (item: IPokemonCard) => Promise<CartMutationResults<"total", { item: IPokemonCartItem }>>
     updateItemQuantity: (payload: QuantityChangePayload) => Promise<CartMutationResults<"total", { item: IPokemonCartItem }>>
-    clearAllItems: () => Promise<{ status: 'Success' | 'Fail' }>
+    clearAllItems: () => Promise<IPokemonCart>
     fetch: () => Promise<IPokemonCart>
 }
 
@@ -66,7 +66,7 @@ export const pokemonCartServices = (storage: Storage): IPokemonCartServices => {
         },
         clearAllItems: async () => {
             storage.clear()
-            return { status: 'Success' }
+            return { total: 0, cartItemById: {}, cartItemIds: [], currency: 'USD' }
         },
         fetch: async () => {
             return {

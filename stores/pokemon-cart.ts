@@ -73,11 +73,11 @@ export const pokemonCartStoreFactory = (services: IPokemonCartServices) => creat
 
         try {
             set({ isLoading: true })
-            const { status } = await services.clearAllItems()
-            if (status === 'Fail') return
+            const results = await services.clearAllItems()
             set((state) => {
-                state.cartItemById = {}
-                state.cartItemIds = []
+                state.cartItemById = results.cartItemById
+                state.cartItemIds = results.cartItemIds
+                state.total = results.total
                 state.isLoading = false
             })
             onSuccess(get())
