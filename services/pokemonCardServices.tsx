@@ -10,10 +10,6 @@ export type PokemonCardParameters = PokemonTCG.Parameter;
  */
 export const pokemonCardServices = {
   ...PokemonTCG,
-  findCardsByQueries: async (
-    params: PokemonCardParameters
-  ): Promise<IPokemonCard[]> =>
-    (await pokemonCardServices.findCardsByQueries(params)) as IPokemonCard[],
   getAll: async (params?: PokemonCardParameters) => {
     const { data: results } = await axios({
       url: "https://api.pokemontcg.io/v2/cards",
