@@ -10,7 +10,10 @@ import {
 } from "@chakra-ui/react";
 
 import { useEffect, useMemo } from "react";
-import { InferGetStaticPaths } from "../../@types/type-utils/next-helpers";
+import {
+  GetStaticPropsResult,
+  InferGetStaticPaths,
+} from "../../@types/type-utils/next-helpers";
 import { MiniCart } from "../../modules/mini-cart/MiniCart";
 
 import { PokemonFilter } from "../../modules/search-filter/Filter";
@@ -89,7 +92,7 @@ const MobileSearch = (props: ISearch) => (
 );
 
 export default function PokemonCardsMarketPage(
-  props: Awaited<ReturnType<typeof getStaticProps>>["props"]
+  props: GetStaticPropsResult<typeof getStaticProps>
 ) {
   const { pokemonList: pagePokemonList, meta } = props;
   const initializeCart = usePokemonCartStore((state) => state.initializeCart);
