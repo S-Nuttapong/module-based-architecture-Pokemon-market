@@ -16,8 +16,8 @@ import {
 import React, { FC } from "react";
 import { ShoppingBagIcon } from "../../public/icons/ShoppingBagIcon";
 import { usePokemonCartStore } from "../../stores/pokemon-cart";
-import { MiniCartTotal } from "./MiniCartTotal";
 import { MiniCartLineItems } from "./MiniCartLineItems";
+import { MiniCartTotal } from "./MiniCartTotal";
 import { useItemQuantityCounter } from "./useItemsQuantityCounter";
 
 type ChakraButtonRef = React.MutableRefObject<HTMLButtonElement | null>;
@@ -29,11 +29,11 @@ export const MiniCart: FC = () => {
   const clearIntermediateQuantity = useItemQuantityCounter(
     (state) => state.clearAll
   );
+  const itemCounts = usePokemonCartStore((state) => state.cartItemIds.length);
   return (
     <>
       <IconButton
         bg="button.secondary"
-        ref={btnRef}
         onClick={onOpen}
         aria-label="Cart"
         borderRadius="8px"
@@ -44,13 +44,32 @@ export const MiniCart: FC = () => {
           boxShadow: "0px 8px 24px rgba(234, 124, 105, 0.32)",
         }}
         icon={
-          <ShoppingBagIcon
-            color="button.secondary"
-            boxSize="1em"
-            viewBox="0 0 14 14"
-          />
+          <Box>
+            <ShoppingBagIcon
+              color="button.secondary"
+              boxSize="1em"
+              viewBox="0 0 14 14"
+            />
+            {!!itemCounts && (
+              <Text
+                fontSize="sm"
+                fontWeight="medium"
+                color="button.secondary"
+                position="absolute"
+                rounded="lg"
+                bg="white"
+                borderColor="#ff2600"
+                borderWidth={1}
+                w={5}
+                top={-1.5}
+                right={-2}
+              >
+                {itemCounts}
+              </Text>
+            )}
+          </Box>
         }
-      />
+      ></IconButton>
       <Drawer
         isOpen={isOpen}
         placement="right"

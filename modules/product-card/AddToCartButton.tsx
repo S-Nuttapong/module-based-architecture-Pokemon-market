@@ -24,6 +24,11 @@ export const AddToCartButton = (props: IPokemonCard) => {
       bg="button.primary"
       _hover={{
         bg: "button.hover",
+        _disabled: {
+          bg: "button.primary",
+          opacity: 0.4,
+          cursor: "not-allowed",
+        },
       }}
       onClick={handleAddToCart}
       isLoading={isLoading && isBeginAddedToCart}
