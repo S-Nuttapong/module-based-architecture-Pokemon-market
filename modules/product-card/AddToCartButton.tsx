@@ -33,6 +33,7 @@ export const AddToCartButton = (props: IPokemonCard) => {
       onClick={handleAddToCart}
       isLoading={isLoading && isBeginAddedToCart}
       isDisabled={isLoading || props.isOutOfStock}
+      aria-disabled={isLoading || props.isOutOfStock}
     >
       Add to cart
     </Button>

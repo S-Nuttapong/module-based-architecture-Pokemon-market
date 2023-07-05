@@ -1,7 +1,7 @@
-import { Flex, Text, Stack, HStack, Box } from "@chakra-ui/react";
+import { Box, Flex, HStack, Stack, Text } from "@chakra-ui/react";
 import Image from "next/image";
-import { usePriceFormatter } from "../../hooks/usePriceFormatter";
 import { IPokemonCard } from "../../@types/pokemonCard";
+import { usePriceFormatter } from "../../hooks/usePriceFormatter";
 import { AddToCartButton } from "./AddToCartButton";
 
 export const ProductCard = (props: IPokemonCard) => {

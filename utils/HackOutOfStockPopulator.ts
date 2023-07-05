@@ -1,11 +1,12 @@
 import { IInventory } from "../@types/pokemonCard";
 
 const HackOutOfStockConfig = {
-    outOfStockChance: 0.2,
+    outOfStockChance: 0.3,
 }
 
 /**
- * temporary class to help define the product out of stock, so we can demonstrate disabled add to cart button 
+ * temporary class to help define the product out of stock, so we can demonstrate disabled add to cart button.
+ * For the purpose of e2e testing, we will intentionally preserve the first 2 cards, you may uses the first 2 items to assert total price 
  * @todo check with business and design team, if we should expose the card inventory / stock at real time, 
  * @todo if the real time need, we may need to discuss with BE about the possibility to adopt web socket, then we may re-assess the rendering pattern again, atm, it is ISR for web-vital and SEO benefit
  */
@@ -27,8 +28,8 @@ export class HackOutOfStockPoputator {
     }
 
     public populateAndTrackPrice<T extends { id: string }>(data: T[]): (T & IInventory)[] {
-        return data.map(d => {
-            const hackPriceData = { isOutOfStock: this.generateOutOfStock() }
+        return data.map((d, idx) => {
+            const hackPriceData = { isOutOfStock: idx > 1 && this.generateOutOfStock() }
             this.trackHackPriceRecord(d.id, hackPriceData)
             return { ...d, ...hackPriceData }
         })
