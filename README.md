@@ -10,7 +10,7 @@ yarn dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-In addition, the deployment can be found [here](https://opn-th-front-end-challenges-s-nuttapong.vercel.app/cards/1)
+In addition, [the deployed preview](https://opn-th-front-end-challenges-s-nuttapong.vercel.app/cards/1) is also available here
 
 Done:
 - [x] basic CRUD functionality
