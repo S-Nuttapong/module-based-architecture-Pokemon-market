@@ -9,7 +9,7 @@ import { GenericApi } from "../@types/type-utils/asyncFunction"
  */
 export const useApi = <TAction extends GenericApi, TError = Error>(action: TAction) => {
     const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState<TError | unknown>()
+    const [error, setError] = useState<TError | unknown | undefined>()
     const [results, setResults] = useState<Awaited<ReturnType<TAction>>>()
 
     const actionWithRemoteState = async (...args: Parameters<TAction>) => {
@@ -17,6 +17,7 @@ export const useApi = <TAction extends GenericApi, TError = Error>(action: TActi
         try {
             const results = await action(...args)
             setResults(results)
+            setError(undefined)
         }
         catch (e) {
             setError(e)
