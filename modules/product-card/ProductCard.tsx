@@ -55,7 +55,7 @@ export const ProductCard = (props: IPokemonCard) => {
             minW="max-content"
           >
             <Text fontSize="12px">
-              {formatPrice(props.cardmarket.prices.averageSellPrice)}
+              {formatPrice(props?.cardmarket?.prices?.averageSellPrice ?? 0)}
             </Text>
             {props.isOutOfStock && <Text fontSize="12px">Out of stock</Text>}
           </HStack>
