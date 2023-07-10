@@ -1,26 +1,57 @@
-import { ICartMarket, IInventory, IPokemonCard } from "../@types/pokemonCard";
+import { ICardMarketPrices, ICartMarket, IInventory, IPokemonCard } from "../@types/pokemonCard";
 
 const HackOutOfStockConfig = {
     outOfStockChance: 0.3,
     stubCardMarket: {
         prices: {
-            "averageSellPrice": 0.1,
-            "lowPrice": 0.02,
-            "trendPrice": 0.1,
-            "reverseHoloSell": 0.38,
-            "reverseHoloLow": 0.09,
-            "reverseHoloTrend": 0.62,
-            "lowPriceExPlus": 0.03,
-            "avg1": 0.1,
-            "avg7": 0.09,
-            "avg30": 0.08,
-            "reverseHoloAvg1": 0.1,
-            "reverseHoloAvg7": 0.64,
-            "reverseHoloAvg30": 0.42
+            0: {
+                "averageSellPrice": 2.58,
+                "lowPrice": 0.02,
+                "trendPrice": 0.1,
+                "reverseHoloSell": 0.38,
+                "reverseHoloLow": 0.09,
+                "reverseHoloTrend": 0.62,
+                "lowPriceExPlus": 0.03,
+                "avg1": 0.1,
+                "avg7": 0.09,
+                "avg30": 0.08,
+                "reverseHoloAvg1": 0.1,
+                "reverseHoloAvg7": 0.64,
+                "reverseHoloAvg30": 0.42,
+            },
+            1: {
+                "averageSellPrice": 0.12,
+                "lowPrice": 0.02,
+                "trendPrice": 0.1,
+                "reverseHoloSell": 0.38,
+                "reverseHoloLow": 0.09,
+                "reverseHoloTrend": 0.62,
+                "lowPriceExPlus": 0.03,
+                "avg1": 0.1,
+                "avg7": 0.09,
+                "avg30": 0.08,
+                "reverseHoloAvg1": 0.1,
+                "reverseHoloAvg7": 0.64,
+                "reverseHoloAvg30": 0.42,
+            },
+            default: {
+                "averageSellPrice": 0.1,
+                "lowPrice": 0.02,
+                "trendPrice": 0.1,
+                "reverseHoloSell": 0.38,
+                "reverseHoloLow": 0.09,
+                "reverseHoloTrend": 0.62,
+                "lowPriceExPlus": 0.03,
+                "avg1": 0.1,
+                "avg7": 0.09,
+                "avg30": 0.08,
+                "reverseHoloAvg1": 0.1,
+                "reverseHoloAvg7": 0.64,
+                "reverseHoloAvg30": 0.42,
+            }
         }
-    } as ICartMarket
+    }
 }
-
 
 /**
  * temporary class to help define the product out of stock, so we can demonstrate disabled add to cart button.
@@ -48,6 +79,13 @@ export class HackOutOfStockPoputator {
 
     public populateAndTrackPrice(data: IPokemonCard[]): (IPokemonCard & IInventory)[] {
         return data.map((d, idx) => {
+            if ([0, 1].includes(idx)) {
+                const prices = HackOutOfStockConfig.stubCardMarket.prices[idx.toString() as "0" | "1"] as ICardMarketPrices
+                const hackPriceData = { isOutOfStock: idx > 1 && this.generateOutOfStock(), cardmarket: { prices } }
+                this.trackHackPriceRecord(d.id, hackPriceData)
+                return { ...d, ...hackPriceData }
+            }
+
             const cardmarket = d.cardmarket || HackOutOfStockConfig.stubCardMarket
             const hackPriceData = { isOutOfStock: idx > 1 && this.generateOutOfStock(), cardmarket }
             this.trackHackPriceRecord(d.id, hackPriceData)
